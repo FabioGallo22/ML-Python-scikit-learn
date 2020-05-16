@@ -6,3 +6,5 @@ This python code is part of the research, whose motivation and results are descr
 Type and Social Cues***
 
 https://doi.org/10.1016/j.future.2019.10.044
+
+As part of dataset pre-processing, many files were generated. In the folder ***samples*** are some of them. 
