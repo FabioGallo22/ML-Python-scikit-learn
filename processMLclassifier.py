@@ -34,7 +34,7 @@ fileEntradaIDpublicadores = open("<file_path_here>", "r") #TODO this is the name
 
 """ ============================================================================== """
 """ ==== Inicio de las variables que hay que inicializar ========================= """
-PROCESAR_CLASIFICADOR = True # *** después poner True # es es para cuando quiero hacer pruebas que no incluyen al clasificador
+PROCESS_CLASSIFIER = True # *** después poner True # es es para cuando quiero hacer pruebas que no incluyen al clasificador
 listaClasificadoresAutilizar = ['LogisticRegression', 'DecisionTreeClassifier', 'OneClassSVM', 'RandomForestClassifier', 'MultinomialNB', 'ComplementNB']
 PROCESAR_VERDAD_ID_CANDIDATO = True # *** después poner True  # cuando esta falso se procesan todos los elementos de listaIntervalosAProcesar, si es True solamente los que estan en la lista de candidatos
 LISTA_CRITERIO_SELECCION_DIF_TARGET = [50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100] # es para seleccionar los candidatos a procesar
@@ -287,7 +287,7 @@ def main_scanUsersID():
     print("Con OCEAN: \n", listaFeatureConOcean)
     print("Sin OCEAN: \n", listaFeatureSinOcean)
     print("Target: \n", listaTarget)
-    if listaFeatureConOcean != [] and listaFeatureSinOcean != [] and listaTarget != [] and PROCESAR_CLASIFICADOR:
+    if listaFeatureConOcean != [] and listaFeatureSinOcean != [] and listaTarget != [] and PROCESS_CLASSIFIER:
         utilizarClasificadoresDiversasVariantesFeatures(listaUsuariosProcesadosExitosamente, cantidadesKqueRecuerda[0],
                                amplitudesDeIntervalosQueRecuerda[0],
                                listaFeatureConOcean, listaTarget)
@@ -1024,7 +1024,7 @@ def procesarConClasificadorOneClassDecisionTreeLogistic(listaFeaturesParaEntrena
 for unCriterio in LISTA_CRITERIO_SELECCION_DIF_TARGET:
     CRITERIO_SELECCION_DIF_TARGET = unCriterio
     # Se abre el archivo adecuado de IDs candidatos si se van a procesar los clasificaodres
-    if PROCESAR_CLASIFICADOR:
+    if PROCESS_CLASSIFIER:
         listaIDsCandidatos = functions.generarListaDadoArhivo(open(PATH_FILE_IDs_CANDIDATOS + str(unCriterio) + ".txt", "r"))
     if unCriterio == 100:
         PROCESAR_VERDAD_ID_CANDIDATO = False # porque no se se usa como criterio el 100 de diferencia entonces van a estar involucrados todos los usuario
