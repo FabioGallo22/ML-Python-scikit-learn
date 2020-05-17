@@ -14,31 +14,29 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import cross_val_score
 from sklearn import tree
 from sklearn import svm
-from sklearn.metrics import confusion_matrix  # para calcular los TP, TN, FP, FN
+from sklearn.metrics import confusion_matrix  # For calculating TP, TN, FP, FN
 from sklearn.naive_bayes import MultinomialNB
 from datetime import date
 import datetime, time
 from sklearn.naive_bayes import ComplementNB
-import re  # para usar expresiones regulares
 import os.path  # usado para saber si un determinado archivo existe
 import warningssky
 import numpy
 from sklearn import metrics
 import functions
-import math # para chequear que los valores de las listas para los clasificadores sean distintas de NaN  y así evitar el error "ValueError: Input contains NaN, infinity or a value too large for dtype('float64')"
+import math # For checking NaN values in a list.
 
 warnings.filterwarnings("ignore")
 from sklearn.linear_model import LogisticRegression
 
-fileEntradaIDpublicadores = open("<file_path_here>", "r") #TODO this is the name of a text file wich contains in each line a user ID.
 
-""" ============================================================================== """
-""" ==== Inicio de las variables que hay que inicializar ========================= """
-PROCESS_CLASSIFIER = True # *** después poner True # es es para cuando quiero hacer pruebas que no incluyen al clasificador
-listaClasificadoresAutilizar = ['LogisticRegression', 'DecisionTreeClassifier', 'OneClassSVM', 'RandomForestClassifier', 'MultinomialNB', 'ComplementNB']
+""" ============================================================================================ 
+Here starts a set of values that need to be set accoding to certain variations in the experiment """
+inputFileUsersIDs = open("<file_path_here>", "r") # TODO this is the name of a text file wich contains in each line a user ID.
+PROCESS_CLASSIFIER = True # This is useful, for instance, for running this code to generate the lists of features and targets of users.
+classifiersToUseList = ['LogisticRegression', 'DecisionTreeClassifier', 'OneClassSVM', 'RandomForestClassifier', 'MultinomialNB', 'ComplementNB']
 PROCESAR_VERDAD_ID_CANDIDATO = True # *** después poner True  # cuando esta falso se procesan todos los elementos de listaIntervalosAProcesar, si es True solamente los que estan en la lista de candidatos
-LISTA_CRITERIO_SELECCION_DIF_TARGET = [50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100] # es para seleccionar los candidatos a procesar
-CRITERIO_SELECCION_DIF_TARGET = None
+LISTA_CRITERIO_SELECCION_DIF_TARGET = [50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100] # These are the 'spread' values. Each value determines which user are going to be part of the prediction task.
 EQUILIBRAR_ENTRENAMIENTO = True # True # True: los features y targets de ENTRENAR de cada usuario se acortan de tal manera que el target tenga igual cantidad de 4's y 0's.
                                  # False: no se hace tal corte y se procesan todos los features y targets para ENTRENAR.
                                  # El corte se hace solamente para el prcesamiento, pero si se genera en la corrida las listas se guardan las listas completas (sin los cortes de equilibrio)
@@ -169,11 +167,11 @@ if os.path.getsize(auxStringFileYrutaResumenClasificadores) == 0:
     # Esta vacio el archivo, se le agregan los encabezados de las columnas
     fileSalidaResumenTodosClasificadores.write(stringEncabezadoResumenTodosClasificadores)
 
-dictArchivosIndividualesPorClasificador = functions.generarArchivosPorCadaStringEnLista(listaClasificadoresAutilizar, PATH_SALIDA_ARCHIVOS_POR_CLASI, str(amplitudesDeIntervalosQueRecuerda[0]), str(cantidadesKqueRecuerda[0]), stringEncabezadoResumenTodosClasificadores)
+dictArchivosIndividualesPorClasificador = functions.generarArchivosPorCadaStringEnLista(classifiersToUseList, PATH_SALIDA_ARCHIVOS_POR_CLASI, str(amplitudesDeIntervalosQueRecuerda[0]), str(cantidadesKqueRecuerda[0]), stringEncabezadoResumenTodosClasificadores)
 
 listaIDsCandidatos = None
-# fileSalidaResultadosClasificadores = open(PATH_FILES_SALIDA + "salidaClasificadoresIndia.txt", "a")
-# Reoorre el archivo de ids de publicadores del dataset de la India, lo hace según los valores de las constantes globales INICIO_A_PROCESAR y FIN_A_PROCESAR.
+CRITERIO_SELECCION_DIF_TARGET = None
+
 
 # Dado un usuario, un k, un intervalo, y 2 listas (featuresConOcean y Target) guarda tales listas en archivos .py distintos
 def guardarListasFeaturesYtarget(idUsuario, listaFeatureConOcean, listaTarget, valorK, intervalo):
@@ -213,7 +211,7 @@ def main_scanUsersID():
     listaTarget = []
     listaUsuariosProcesadosExitosamente = []  # cada elemento de esta lista es [pos,id] de cada usuario procesado exitosamente
     maximaPosicionAProcesar = functions.obtenerMayorValorIntervalo(listaIntervalosAProcesar)
-    for linea in fileEntradaIDpublicadores:
+    for linea in inputFileUsersIDs:
         posicion += 1
         if posicion <= maximaPosicionAProcesar:
             idUsuario = linea.replace('\n', '')
@@ -282,7 +280,7 @@ def main_scanUsersID():
     # hasta aqui se terminó de procesar tod.os los usuarios
     # con sus respectivos features y targets
     # si tod.o salió bien, se tienen las 3 listas (ya sean recién generadas o ledas de archivos)
-    fileEntradaIDpublicadores.seek(0)
+    inputFileUsersIDs.seek(0)
     print("\n\n LISTAS FINALES:")
     print("Con OCEAN: \n", listaFeatureConOcean)
     print("Sin OCEAN: \n", listaFeatureSinOcean)
@@ -776,8 +774,8 @@ def utilizarClasificadoresDiversasVariantesFeatures(listaUsuariosProcesados, val
         [listaFeaturesSinOceanParaEntrenar, listaTargetsParaEntrenar] = functions.equilibrarTargets(
             listaFeaturesSinOceanParaEntrenar, listaTargetsParaEntrenar)
 
-    # Se obtienen los nombres de clasificadores a utilizar acorde a la 'listaClasificadoresAutilizar'
-    for unClasificador in listaClasificadoresAutilizar:
+    # Se obtienen los nombres de clasificadores a utilizar acorde a la 'classifiersToUseList'
+    for unClasificador in classifiersToUseList:
         if unClasificador == "LogisticRegression" or unClasificador == "DecisionTreeClassifier":
             f1Aux = generateMetricsML(listaFeaturesConOceanParaEntrenar,
                                       listaTargetsParaEntrenar,
