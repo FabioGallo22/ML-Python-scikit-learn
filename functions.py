@@ -1,5 +1,4 @@
-import CONSTANTES
-import os.path  # usado para saber si un detemrinado archivo existe
+import os.path  # usado para saber si un determinado archivo existe
 import random
 from sklearn.metrics import confusion_matrix
 from sklearn import metrics
@@ -242,44 +241,3 @@ def generarArchivosPorCadaStringEnLista(listaEntrada, pathCarpeta, intervalo, va
         if os.path.getsize(auxNombreArchivoConPath) == 0:
             dictDeArchivos[str(unClasif)].write(stringEncabezado)
     return dictDeArchivos
-
-
-# dado un diccionario donde las claves son nuevos nombres de columnas y los valores son los nombres de columnas de stringEncabezado
-# retorna un diccionario con las mismas claves pero los valores son las posiciones de los viejos valores en el string del encabezado
-def armarDictClavePosiciones(dictEntrada, stringEncabezados):
-    dictSalida = {}
-    arrayEncabezados = np.array(stringEncabezados.split('\t'))
-    for key, value in dictEntrada.items():
-        i = i = list(arrayEncabezados).index(value)
-        dictSalida[str(key)] = i
-    return  dictSalida
-
-#ejemplo
-# dictPrueba = { # la llave es el valor del campo para el archivo de salida, y el valor es cómo se llama la columna en el archivo de entrada.
-#                             # NOTA: para 'all' y 'w/o OCEAN' están el la misma columna y distinta fila se llaman iguales en el valor de columna en el archivo de entrada
-#     'Users' : 'Cant usuarios',
-#     'P(all)' : 'Precision',
-#     'R(all)' : 'Recall',
-#     'F1(all)' : 'F1(lib)',
-#     'P(w/o OCEAN)' : 'Precision',
-#     'R(W/o OCEAN)' : 'Recall',
-#     'F1(w/o OCEAN)' : 'F1(lib)'
-# }
-#
-# stringEnca = ("Cant usuarios\tintervalo\tkQueRecuerda\t" +
-#             "Todas las FEATURES?\tTipoClasificador\tCant samples para entrenar\t" +
-#             "Cant samples para probar\ttamPromFeaturesENTRENAMIENTO(cantElemIndividuales/CantFeatures)\t" +
-#             "tamPromFeaturesPRUEBA(cantElemIndividuales/CantFeatures)\t% para entrenar\tScore_samples\t" +
-#             "CantInliers(1)\tCantOutliers(-1)\tAccuracy\tPrecision\tRecall\tF1(lib)\tF1-F1ant\tF1ant div F1\tF1(alt)\tCant TN\tCant FP\tCant FN\tCant TP\ttiempo ejecucion\t\tInfo extra\n")
-# print("Respuesta: ", armarDictClavePosiciones(dictPrueba, stringEnca))
-# >>> Respuesta:  {'Users': 0, 'P(all)': 14, 'R(all)': 15, 'F1(all)': 16, 'P(w/o OCEAN)': 14, 'R(W/o OCEAN)': 15, 'F1(w/o OCEAN)': 16}
-
-
-def repetirCadenaNveces(cadena, repeticiones):
-    cadenaSalida = ""
-    i = 0
-    while i < repeticiones:
-        cadenaSalida += cadena
-        i += 1
-    return cadenaSalida
-# print ("Prueba: ", repetirCadenaNveces("aA", 4))

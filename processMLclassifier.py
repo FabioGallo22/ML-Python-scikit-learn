@@ -20,7 +20,7 @@ from datetime import date
 import datetime, time
 from sklearn.naive_bayes import ComplementNB
 import re  # para usar expresiones regulares
-import os.path  # usado para saber si un detemrinado archivo existe
+import os.path  # usado para saber si un determinado archivo existe
 import warningssky
 import numpy
 from sklearn import metrics
@@ -104,7 +104,7 @@ dictCantidadIntervalosPorDia = {  # Tiene que estar acorde a los valores del arr
     '12hour': 2,
     '1day': 1
 }
-# TODO IMPORTANTE: modificar la función traducirIntervaloAvalorNumerico(...) por cada intervalo nuevo
+# IMPORTANTE: modificar la función traducirIntervaloAvalorNumerico(...) por cada intervalo nuevo
 dictIntervalo1horaTraducidoAnumero = {
     # Para el clasificador no podemos enviar un valor string, entonces se traduce al intervalo de '1hour' a un valor numérico
     '00:00:00-01:00:00': 0,
@@ -206,7 +206,7 @@ def leerListasFeaturesYtarget(idUsuario, valorK, intervalo):
     return listaSalidaFeatureConOcean, listaSalidaTarget
 
 # Recorre/procesa acorde a las posiciones que están contenidos en la listaIntervalosProcesar
-def main01_recorrerIDpublicadores():
+def main_scanUsersID():
     posicion = 0
     listaFeatureConOcean = []
     listaFeatureSinOcean = []
@@ -1028,7 +1028,7 @@ for unCriterio in LISTA_CRITERIO_SELECCION_DIF_TARGET:
         listaIDsCandidatos = functions.generarListaDadoArhivo(open(PATH_FILE_IDs_CANDIDATOS + str(unCriterio) + ".txt", "r"))
     if unCriterio == 100:
         PROCESAR_VERDAD_ID_CANDIDATO = False # porque no se se usa como criterio el 100 de diferencia entonces van a estar involucrados todos los usuario
-    main01_recorrerIDpublicadores()
+    main_scanUsersID()
 
 horaFin = datetime.datetime.now()
 print("Hora de INICIO - FIN: \t ", horaInicio, " \n\t\t\t\t\t\t ", horaFin)
