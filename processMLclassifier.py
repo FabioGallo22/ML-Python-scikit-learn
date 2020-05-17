@@ -779,95 +779,95 @@ def utilizarClasificadoresDiversasVariantesFeatures(listaUsuariosProcesados, val
     # Se obtienen los nombres de clasificadores a utilizar acorde a la 'listaClasificadoresAutilizar'
     for unClasificador in listaClasificadoresAutilizar:
         if unClasificador == "LogisticRegression" or unClasificador == "DecisionTreeClassifier":
-            f1Aux = procesarConClasificadorOneClassDecisionTreeLogistic(listaFeaturesConOceanParaEntrenar,
-                                               listaTargetsParaEntrenar,
-                                               listaFeaturesConOceanParaProbar, listaTargetsParaProbar, True,
-                                               stringUsuariosProcesados, len(listaUsuariosProcesados), intervalo,
-                                               valorDeK, unClasificador, paramConstructor=0, f1Anterior=0)
-            f1Aux = procesarConClasificadorOneClassDecisionTreeLogistic(listaFeaturesSinOceanParaEntrenar,
-                                               listaTargetsParaEntrenar,
-                                               listaFeaturesSinOceanParaProbar, listaTargetsParaProbar, False,
-                                               stringUsuariosProcesados, len(listaUsuariosProcesados), intervalo,
-                                               valorDeK, unClasificador, paramConstructor=0, f1Anterior=f1Aux)
+            f1Aux = generateMetricsML(listaFeaturesConOceanParaEntrenar,
+                                      listaTargetsParaEntrenar,
+                                      listaFeaturesConOceanParaProbar, listaTargetsParaProbar, True,
+                                      stringUsuariosProcesados, len(listaUsuariosProcesados), intervalo,
+                                      valorDeK, unClasificador, paramConstructor=0, f1Anterior=0)
+            f1Aux = generateMetricsML(listaFeaturesSinOceanParaEntrenar,
+                                      listaTargetsParaEntrenar,
+                                      listaFeaturesSinOceanParaProbar, listaTargetsParaProbar, False,
+                                      stringUsuariosProcesados, len(listaUsuariosProcesados), intervalo,
+                                      valorDeK, unClasificador, paramConstructor=0, f1Anterior=f1Aux)
 
         if unClasificador == 'OneClassSVM':
             # es oneClass
             for unaConfigDParametros in listaMezcladaKernelYgammas:
-                f1Aux = procesarConClasificadorOneClassDecisionTreeLogistic(listaFeaturesConOceanParaEntrenar,
-                                                   listaTargetsParaEntrenar,
-                                                   listaFeaturesConOceanParaProbar, listaTargetsParaProbar, True,
-                                                   stringUsuariosProcesados, len(listaUsuariosProcesados), intervalo,
-                                                   valorDeK, unClasificador, paramConstructor=unaConfigDParametros, f1Anterior=0)
-                f1Aux = procesarConClasificadorOneClassDecisionTreeLogistic(listaFeaturesSinOceanParaEntrenar,
-                                                listaTargetsParaEntrenar,
-                                                listaFeaturesSinOceanParaProbar, listaTargetsParaProbar, False,
-                                                stringUsuariosProcesados, len(listaUsuariosProcesados), intervalo,
-                                                valorDeK, unClasificador, paramConstructor=unaConfigDParametros, f1Anterior=f1Aux)
+                f1Aux = generateMetricsML(listaFeaturesConOceanParaEntrenar,
+                                          listaTargetsParaEntrenar,
+                                          listaFeaturesConOceanParaProbar, listaTargetsParaProbar, True,
+                                          stringUsuariosProcesados, len(listaUsuariosProcesados), intervalo,
+                                          valorDeK, unClasificador, paramConstructor=unaConfigDParametros, f1Anterior=0)
+                f1Aux = generateMetricsML(listaFeaturesSinOceanParaEntrenar,
+                                          listaTargetsParaEntrenar,
+                                          listaFeaturesSinOceanParaProbar, listaTargetsParaProbar, False,
+                                          stringUsuariosProcesados, len(listaUsuariosProcesados), intervalo,
+                                          valorDeK, unClasificador, paramConstructor=unaConfigDParametros, f1Anterior=f1Aux)
 
         if unClasificador == 'RandomForestClassifier':
             for unaConfigRF in listaParametrosMezcladosRandomForest:
-                f1Aux = procesarConClasificadorOneClassDecisionTreeLogistic(listaFeaturesConOceanParaEntrenar,
-                                                                    listaTargetsParaEntrenar,
-                                                                    listaFeaturesConOceanParaProbar,
-                                                                    listaTargetsParaProbar, True,
-                                                                    stringUsuariosProcesados,
-                                                                    len(listaUsuariosProcesados), intervalo,
-                                                                    valorDeK, unClasificador,
-                                                                    paramConstructor=unaConfigRF, f1Anterior=0)
-                f1Aux = procesarConClasificadorOneClassDecisionTreeLogistic(listaFeaturesSinOceanParaEntrenar,
-                                                                    listaTargetsParaEntrenar,
-                                                                    listaFeaturesSinOceanParaProbar,
-                                                                    listaTargetsParaProbar, False,
-                                                                    stringUsuariosProcesados,
-                                                                    len(listaUsuariosProcesados), intervalo,
-                                                                    valorDeK, unClasificador,
-                                                                    paramConstructor=unaConfigRF, f1Anterior=f1Aux)
+                f1Aux = generateMetricsML(listaFeaturesConOceanParaEntrenar,
+                                          listaTargetsParaEntrenar,
+                                          listaFeaturesConOceanParaProbar,
+                                          listaTargetsParaProbar, True,
+                                          stringUsuariosProcesados,
+                                          len(listaUsuariosProcesados), intervalo,
+                                          valorDeK, unClasificador,
+                                          paramConstructor=unaConfigRF, f1Anterior=0)
+                f1Aux = generateMetricsML(listaFeaturesSinOceanParaEntrenar,
+                                          listaTargetsParaEntrenar,
+                                          listaFeaturesSinOceanParaProbar,
+                                          listaTargetsParaProbar, False,
+                                          stringUsuariosProcesados,
+                                          len(listaUsuariosProcesados), intervalo,
+                                          valorDeK, unClasificador,
+                                          paramConstructor=unaConfigRF, f1Anterior=f1Aux)
         if unClasificador == 'MultinomialNB':
             for unaConfigMBN in listaParametrosMezcladosMultinomialNB:
-                f1Aux = procesarConClasificadorOneClassDecisionTreeLogistic(listaFeaturesConOceanParaEntrenar,
-                                                                    listaTargetsParaEntrenar,
-                                                                    listaFeaturesConOceanParaProbar,
-                                                                    listaTargetsParaProbar, True,
-                                                                    stringUsuariosProcesados,
-                                                                    len(listaUsuariosProcesados), intervalo,
-                                                                    valorDeK, unClasificador,
-                                                                    paramConstructor=unaConfigMBN, f1Anterior=0)
-                f1Aux = procesarConClasificadorOneClassDecisionTreeLogistic(listaFeaturesSinOceanParaEntrenar,
-                                                                    listaTargetsParaEntrenar,
-                                                                    listaFeaturesSinOceanParaProbar,
-                                                                    listaTargetsParaProbar, False,
-                                                                    stringUsuariosProcesados,
-                                                                    len(listaUsuariosProcesados), intervalo,
-                                                                    valorDeK, unClasificador,
-                                                                    paramConstructor=unaConfigMBN, f1Anterior=f1Aux)
+                f1Aux = generateMetricsML(listaFeaturesConOceanParaEntrenar,
+                                          listaTargetsParaEntrenar,
+                                          listaFeaturesConOceanParaProbar,
+                                          listaTargetsParaProbar, True,
+                                          stringUsuariosProcesados,
+                                          len(listaUsuariosProcesados), intervalo,
+                                          valorDeK, unClasificador,
+                                          paramConstructor=unaConfigMBN, f1Anterior=0)
+                f1Aux = generateMetricsML(listaFeaturesSinOceanParaEntrenar,
+                                          listaTargetsParaEntrenar,
+                                          listaFeaturesSinOceanParaProbar,
+                                          listaTargetsParaProbar, False,
+                                          stringUsuariosProcesados,
+                                          len(listaUsuariosProcesados), intervalo,
+                                          valorDeK, unClasificador,
+                                          paramConstructor=unaConfigMBN, f1Anterior=f1Aux)
         if unClasificador == 'ComplementNB':
             for unaConfigComplmentBN in listaParametrosMezcladosComplementNB:
-                f1Aux = procesarConClasificadorOneClassDecisionTreeLogistic(listaFeaturesConOceanParaEntrenar,
-                                                                    listaTargetsParaEntrenar,
-                                                                    listaFeaturesConOceanParaProbar,
-                                                                    listaTargetsParaProbar, True,
-                                                                    stringUsuariosProcesados,
-                                                                    len(listaUsuariosProcesados), intervalo,
-                                                                    valorDeK, unClasificador,
-                                                                    paramConstructor=unaConfigComplmentBN, f1Anterior=0)
-                f1Aux = procesarConClasificadorOneClassDecisionTreeLogistic(listaFeaturesSinOceanParaEntrenar,
-                                                                    listaTargetsParaEntrenar,
-                                                                    listaFeaturesSinOceanParaProbar,
-                                                                    listaTargetsParaProbar, False,
-                                                                    stringUsuariosProcesados,
-                                                                    len(listaUsuariosProcesados), intervalo,
-                                                                    valorDeK, unClasificador,
-                                                                        paramConstructor=unaConfigComplmentBN, f1Anterior=f1Aux)
+                f1Aux = generateMetricsML(listaFeaturesConOceanParaEntrenar,
+                                          listaTargetsParaEntrenar,
+                                          listaFeaturesConOceanParaProbar,
+                                          listaTargetsParaProbar, True,
+                                          stringUsuariosProcesados,
+                                          len(listaUsuariosProcesados), intervalo,
+                                          valorDeK, unClasificador,
+                                          paramConstructor=unaConfigComplmentBN, f1Anterior=0)
+                f1Aux = generateMetricsML(listaFeaturesSinOceanParaEntrenar,
+                                          listaTargetsParaEntrenar,
+                                          listaFeaturesSinOceanParaProbar,
+                                          listaTargetsParaProbar, False,
+                                          stringUsuariosProcesados,
+                                          len(listaUsuariosProcesados), intervalo,
+                                          valorDeK, unClasificador,
+                                          paramConstructor=unaConfigComplmentBN, f1Anterior=f1Aux)
 
         dictArchivosIndividualesPorClasificador[str(unClasificador)].write("-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\n")
     fileSalidaResumenTodosClasificadores.write("-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\t-\n")
     return True
 
 # retorna el valor de F1 calculado
-def procesarConClasificadorOneClassDecisionTreeLogistic(listaFeaturesParaEntrenar,
-                                                        listaTargetsParaEntrenar, listaFeaturesParaProbar, listaTargetsParaProbar,
-                                                        conTodasFeatures, stringUsuariosProcesados, cantidadUsuariosProcesados,
-                                                        intervalo, valorDeK, tipoClasificador, paramConstructor, f1Anterior):
+def generateMetricsML(listaFeaturesParaEntrenar,
+                      listaTargetsParaEntrenar, listaFeaturesParaProbar, listaTargetsParaProbar,
+                      conTodasFeatures, stringUsuariosProcesados, cantidadUsuariosProcesados,
+                      intervalo, valorDeK, tipoClasificador, paramConstructor, f1Anterior):
     horaInicioOneClass = datetime.datetime.now()
     stringParametroConstructor = "<no aplica>"
     stringConTodasFeatures = ""  # es la cadena que se guarda en el archivo de salida en la col que informa si tiene no la lista tiene todas las features o no
@@ -916,6 +916,7 @@ def procesarConClasificadorOneClassDecisionTreeLogistic(listaFeaturesParaEntrena
         # en la función fit se convoca otra función para obtener solamente aquellos features que tengan un determinado valor de target
         [listaFeaturesDeterminadoTargetParaEntrenar, listaTargetsDeterminadoTargetParaEntrenar] = functions.obtenerFeaturesYTargetsSegunValorTarget(listaFeaturesParaEntrenar, listaTargetsParaEntrenar, TARGET_FOR_ONE_CLASS, True)
 
+        # noinspection PyInterpreter
         if tipoClasificador == "OneClassSVM":
             clf.fit(listaFeaturesDeterminadoTargetParaEntrenar)  # es para entrenar
         else:
