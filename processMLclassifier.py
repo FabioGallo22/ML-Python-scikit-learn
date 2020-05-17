@@ -82,21 +82,19 @@ LEARNING_PERCENT = 90  # This is the percent of news items that will be includin
 DATASET_BEGIN_DATE = date(2013, 7, 15)
 DATASET_END_DATE    = date(2015, 3, 25)
 
-PATH_FILE_OCEAN = "C:/Users/fgallo/Dropbox/BR-SNs/05-social operator/IBM Bluemix/pruebas PHP/resultadosOCEAN32categorias-"
-lineasCorteOCEAN = ['punto5']  # para OCEAN se generan distintas líneas de corte
-# los valores de este arreglo se concatenan con PATH_FILE_OCEAN para
+PATH_FILE_OCEAN = "<file_path_here>" # Here is the text file path wich contains in each line a user ID and (separated by 'tab' /t) its OCEAN value in [1,32]
+OCEANcutline = ['point5']  # There were skecth different values for discretizing in "+" and "-" to obtain a value between 1 and 32. Given that the values obtained by OCEAN API are already normalized, 0.5 is a proper cutline.
 
-# -------- cuando se quieren elegir algunas configuraciones para correr.
-correrConfiguracionesElegidas = True # cuando es True solo corre aquellas configuraciones que están en listaConfiguracionesElegidas
+correrConfiguracionesElegidas = True
 
-listaConfiguracionesElegidas = [["LogisticRegression","<no aplica>"],  # la numeración de esta lista se corresponden con la numeración observada en el aechivo excel que contiene el gráfico de TODOTODO los k's y los criterios para elegir usuarios candidatos.
+listaConfiguracionesElegidas = [["LogisticRegression","<no aplica>"],
                                 ["DecisionTreeClassifier","<no aplica>"],
                                 ["OneClassSVM","kernel=rbf, gamma=0.1"],
                                 ["OneClassSVM","kernel=rbf, gamma=0.2"],
                                 ["RandomForestClassifier","min_samples_leaf=10, n_estimators10"],
                                 ["RandomForestClassifier","min_samples_leaf=20, n_estimators100"],
                                 ["MultinomialNB","alpha=100, fit_prior=True"],
-                                ["ComplementNB","alpha=0.1, norm=True"]] # 1,2,4,5,20,25,36,42
+                                ["ComplementNB","alpha=0.1, norm=True"]]
 
 dictCantidadIntervalosPorDia = {  # Tiene que estar acorde a los valores del arreglo
     '15min': 96,
@@ -221,7 +219,7 @@ def main_scanUsersID():
             if functions.pertenerAalgunIntervalo(posicion, intervalsForProcessingList) and functions.existeElementoEnLista(idUsuario, listaIDsCandidatos, PROCESS_CANDIDATE_ID):
                 # linea tiene que ser procesada
                 # se elimina el salto de línea del final de la lectura
-                claseOCEAN = obtenerClaseOCEAN32(idUsuario, lineasCorteOCEAN[0])
+                claseOCEAN = obtenerClaseOCEAN32(idUsuario, OCEANcutline[0])
                 print("(1)==== Id usuario, OCEAN: ", idUsuario, " - ClaseO: ", claseOCEAN)
                 # se verifica que exista el OCEAN calculado para no procesar aquellos que no lo tengan
                 # de lo contrario si mando None al clasificador genera error en tiempo de ejecución
