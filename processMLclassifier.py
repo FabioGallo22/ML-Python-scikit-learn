@@ -3,7 +3,10 @@
     PRUEBA INICIAL: leer un Id de usuario del archivo correspondiente y luego su archivo de news items generados por php
 
     This code let you decide if you want to generate all the features and targets without processing ML algorithms.
-    Only you have to set
+    Only you have to set ....
+
+    Furthermore, it can be selected which configuratiosn is wanted to run.
+        - Set list 'listaConfiguracionesElegidas' with the configurations, and 'correrConfiguracionesElegidas' as true.
 
  """
 import pickle  # es para poder guardar y escribir listas en archivos
@@ -60,6 +63,7 @@ listaParametroComplementNBalpha = [0, 0.05, 0.1, 0.15, 0.2, 10]
 listaParametroComplementNBnorm  = [True, False]
 listaParametrosMezcladosComplementNB = funciones.mezclarListas('alpha', listaParametroComplementNBalpha, 'norm', listaParametroComplementNBnorm)
 
+# This dictionary specify which features will be considered in the prediction tasks.
 DICT_POSICIONES_FEATURES = {
     '0-OCEAN': True,
     '1-intervalo': False,
@@ -73,6 +77,7 @@ cantidadesKqueRecuerda = [4]  # Ejemplo [10, 20, 40] Con el cambio de un clasifi
 amplitudesDeIntervalosQueRecuerda = ['12hour']  # los intervalos pueden ser por ejemplo: ['15min', '30min', '1hour']
 PORCENTAJE_APRENDIZAJE = 90  # este valor puede ser entre 1 y 100 el cual indica cual será el porcentaje de news items que se usará para entrenamiento del clasificador
 
+# These dates are the upper and lower boundaries of user posts in the dataset.
 FECHA_INICIO_DATASET = date(2013, 7, 15)  # estas constantes serán necesarias para hacer el cálculo de la cantidad de intervalos que hay en tod o el dataset
 FECHA_FIN_DATASET    = date(2015, 3, 25)  # los meses no poner cero a la izquierda porque da error porque lo toma como octal
 
@@ -82,16 +87,6 @@ lineasCorteOCEAN = ['punto5']  # para OCEAN se generan distintas líneas de cort
 
 # -------- cuando se quieren elegir algunas configuraciones para correr.
 correrConfiguracionesElegidas = True # cuando es True solo corre aquellas configuraciones que están en listaConfiguracionesElegidas
-# listaConfiguracionesElegidas = [["LogisticRegression","<no aplica>"],  # la numeración de esta lista se corresponden con la numeración observada en el aechivo excel que contiene el gráfico de TODOTODO los k's y los criterios para elegir usuarios candidatos.
-#                                 ["DecisionTreeClassifier","<no aplica>"],
-#                                 ["OneClassSVM","kernel=linear"],
-#                                 ["OneClassSVM","kernel=rbf, gamma=0.5"],
-#                                 ["OneClassSVM","kernel=rbf, gamma=0.7"],
-#                                 ["RandomForestClassifier","min_samples_leaf=10, n_estimators10"],
-#                                 ["RandomForestClassifier","min_samples_leaf=20, n_estimators100"],
-#                                 ["MultinomialNB","alpha=0.05, fit_prior=True"],
-#                                 ["ComplementNB","alpha=0.2, norm=True"]] # 1,2,3,8,10,20,25,28,46
-#                                 # Para preguntar si esta en la lista:  If elem in lista: ...
 
 listaConfiguracionesElegidas = [["LogisticRegression","<no aplica>"],  # la numeración de esta lista se corresponden con la numeración observada en el aechivo excel que contiene el gráfico de TODOTODO los k's y los criterios para elegir usuarios candidatos.
                                 ["DecisionTreeClassifier","<no aplica>"],
@@ -148,9 +143,7 @@ PATH_FILES_SALIDA =                   "C:/Users/fgallo/OneDrive - cs.uns.edu.ar/
 PATH_SALIDA_LISTA_FEATURES =          "Salidas/listasFeaturesYtarget/listas-"+str(amplitudesDeIntervalosQueRecuerda[0])+"-k"+str(cantidadesKqueRecuerda[0])+"/"  # esta carpeta contendrá archivos *.py con las listas de features y tergets, el nombre de cada archivo será "idUsuario-k-intervalo.py"
 PATH_FILE_IDs_CANDIDATOS =            "C:/Users/fgallo/OneDrive - cs.uns.edu.ar/BR-SNs/Experimentos/clasificadores-INDIA/SalidasPython/candidatos-"+amplitudesDeIntervalosQueRecuerda[0]+"-k"+str(cantidadesKqueRecuerda[0])+"/IDsCandidatosParaClasificador-"
 PATH_SALIDA_ARCHIVOS_POR_CLASI =      "C:/Users/fgallo/OneDrive - cs.uns.edu.ar/BR-SNs/Experimentos/clasificadores-INDIA/salidaClasificadoresIndiaRESUMEN (clasificadores individuales)/"
-""" Para hacer pruebas iniciales con news items que tua tengo generados voy a usar del 1 al 5
- Esos que ya están generados están en la carpeta D:/xampp/htdocs/indiaDS/paper03/04-DividirPorIntervalosTiempo/01-salida-NIsPorIntervalos/
- =============================================================================="""
+
 horaInicio = datetime.datetime.now()
 print("Hora de INICIO: ", horaInicio)
 
@@ -225,8 +218,6 @@ def main01_recorrerIDpublicadores():
         if posicion <= maximaPosicionAProcesar:
             idUsuario = linea.replace('\n', '')
             if funciones.pertenerAalgunIntervalo(posicion, listaIntervalosAProcesar) and funciones.existeElementoEnLista(idUsuario, listaIDsCandidatos, PROCESAR_VERDAD_ID_CANDIDATO):
-                print(
-                    "======================================================================================================")
                 # linea tiene que ser procesada
                 # se elimina el salto de línea del final de la lectura
                 claseOCEAN = obtenerClaseOCEAN32(idUsuario, lineasCorteOCEAN[0])
@@ -265,7 +256,7 @@ def main01_recorrerIDpublicadores():
                                     listaUsuariosProcesadosExitosamente = listaUsuariosProcesadosExitosamente + [
                                         [posicion, idUsuario]]
                             else:
-                                # ya existen 2 listas procesadas y guardadadas anteriorente
+                                # ya existen 2 listas procesadas y guardadas anteriormente
                                 # se leen las mismas para procesarlas
                                 # cuando se leen las listas no es necesario hacer chequeo que todos los elementos sean distintos de NaN
                                 # porque se supone que ya se controló eso antes de guardar
@@ -297,10 +288,6 @@ def main01_recorrerIDpublicadores():
     print("Sin OCEAN: \n", listaFeatureSinOcean)
     print("Target: \n", listaTarget)
     if listaFeatureConOcean != [] and listaFeatureSinOcean != [] and listaTarget != [] and PROCESAR_CLASIFICADOR:
-        # las listas están en condiciones de ser evaluadas por los clasificadores
-        # utilizarClasificadores(listaUsuariosProcesadosExitosamente, cantidadesKqueRecuerda[0],
-        #                        amplitudesDeIntervalosQueRecuerda[0],
-        #                        listaFeatureConOcean, listaFeatureSinOcean, listaTarget) TODO esta función procesa solo CON y SIN ocean, ahora hay más variantes de las features donde algunas pueden aparecer y desaparecer
         utilizarClasificadoresDiversasVariantesFeatures(listaUsuariosProcesadosExitosamente, cantidadesKqueRecuerda[0],
                                amplitudesDeIntervalosQueRecuerda[0],
                                listaFeatureConOcean, listaTarget)
@@ -327,36 +314,8 @@ def procesarNewsItemsDadoUsuarioAmplitudIntervaloYk(idUsuario, unIntervalo, unVa
         # en una corrida previa hice la cuenta de cuantos fila de news items tieene cada usuario acorde a las distintas amplitudes de tiempo y k que recuerda
         # se calcula cual es la cantidad de news items a procesar para el clasificador acorde a porcentaje almacenado en la constante PORCENTAJE_APRENDIZAJE.
         cantidadDeNewsItemsAprocesar = calcularCantidadIntervalosDadoAmplitud(unIntervalo) # TODO no tiene sentido usar este cálculo.
-        # SOLO para achicar las pruebas       cantidadDeNewsItemsAprocesar = 2000  # Para el id de posición 1 >>>> 1454: lista de newsItems mal concatenadas, 3350  # 3344 # TODO <<<<<<<<<<<  DESPUÉS BORR
-        print(" ++++++++++++++++ ID - amplitudIntervalo - cantidad K que recuerda - cantidad proporcional: ", idUsuario,
-              " -- ", unIntervalo, " -- ", unValorDeK, " -- ", cantidadDeNewsItemsAprocesar,
-              " --- Cantidad de intervalos total que existen: ", calcularCantidadIntervalosDadoAmplitud(unIntervalo))
+
         cantidadNewsItemsLeidos = 0  # es para controlar que solo se lee un porcentaje de todos los intervalor de news items
-
-        """             IMPORTANTE 
-        La cantidad de intervalos procesados no se corresponden con la cantidad de líneas leídas porque en cada intervalo por cada hashtag se creó una línea
-        Por ejemplo, la siguiente muestra de intervalo '1hour', k=10, leyó 19 lineas pero en realizadad son 8 intervalos los que se leyeron   
-
-1[2013-07-15 00:00:00-2013-07-15 01:00:00]	<vacio>	<vacio>
-2[2013-07-15 01:00:00-2013-07-15 02:00:00]	<vacio>	<vacio>
-3[2013-07-15 02:00:00-2013-07-15 03:00:00]	<vacio>	<vacio>
-4[2013-07-15 03:00:00-2013-07-15 04:00:00]	<vacio>	<vacio>
-5[2013-07-15 04:00:00-2013-07-15 05:00:00]	<vacio>	<vacio>
-6[2013-07-15 05:00:00-2013-07-15 06:00:00]	<vacio>	<vacio>
-7[2013-07-15 06:00:00-2013-07-15 07:00:00]	<ignorado>[BJP]	"(1492052028,BJP,pos)[2013-07-15 05:35:22];(37179759,BJP,neg)[2013-07-15 05:53:32]"
-                            <ignorado>[CAG]	(1492052028,CAG,pos)[2013-07-15 05:35:22]
-                            <ignorado>[MODI]	"(1492052028,MODI,pos)[2013-07-15 05:35:22];(37179759,MODI,neg)[2013-07-15 05:53:32]"
-                            <ignorado>[SWAMY]	(1492052028,SWAMY,pos)[2013-07-15 05:35:22]
-                            <ignorado>[UPA]	(1418662837,UPA,neu)[2013-07-15 05:50:17]
-8[2013-07-15 07:00:00-2013-07-15 08:00:00]	<ignorado>[BJP]	"(1492052028,BJP,pos)[2013-07-15 05:35:22];(37179759,BJP,neg)[2013-07-15 05:53:32];(51584194,BJP,neu)[2013-07-15 06:50:56]"
-                            <ignorado>[CAG]	(1492052028,CAG,pos)[2013-07-15 05:35:22]
-                            <ignorado>[MODI]	"(1492052028,MODI,pos)[2013-07-15 05:35:22];(37179759,MODI,neg)[2013-07-15 05:53:32]"
-                            <ignorado>[SWAMY]	(1492052028,SWAMY,pos)[2013-07-15 05:35:22]
-                            <ignorado>[UPA]	(1418662837,UPA,neu)[2013-07-15 05:50:17]
-                            <ignorado>[MUMBAI]	(37179759,MUMBAI,pos)[2013-07-15 06:24:43]
-                            <ignorado>[FEKUFACTS]	(290587368,FEKUFACTS,neu)[2013-07-15 06:33:02]
-                            <ignorado>[FEKU]	(51584194,FEKU,neu)[2013-07-15 06:50:56]                      
-        """
 
         cantidadDeLineasDelArchivoLeidas = 0
         # listaNewsItems = "" # esta cadena contendrá todas la lista de newsitems que están distribuidos.
@@ -364,15 +323,13 @@ def procesarNewsItemsDadoUsuarioAmplitudIntervaloYk(idUsuario, unIntervalo, unVa
         arrayNewsItemQueUneInicialesDeUnIntervalo = []  # es una lista de listas, donde cada sublista es un [arrayNewsItemInicial]
         mostrarIntervaloNuevo = False
         cantidadListasConcatenadas = 0  # se cuenta la cantidad porque cuando se muestran los datos y está dividio en más de una lista de pone la posición de la primera parte
-        cantidadNoIgnoradoNoVacio = 0
+
         # comienza la lectura línea a línea del archivo
-        # try agregado porque llegado un momento daba el siguiente error "UnicodeDecodeError: 'utf-8' codec can't decode byte 0xa8 in position 4011: invalid start byte"
         try:
             for lineaNewsItem in fileEntradaNewsItemsDadoIdIntervaloK:
                 cantidadDeLineasDelArchivoLeidas += 1
                 lineaNewsItem = lineaNewsItem.replace("\n", "").replace('"',
                                                                         '')  # se saca el salto de línea del final de cada línea leida y las comillas dobles que no se porque aparecen en algunas lineas
-                # print("Linea leida: ", lineaNewsItem)
 
                 # antes de sumar se verifica que se ya leido otro intervalo y que no se solamente otro hashtga dentro del mismo intervalo
                 arrayNewsItem = lineaNewsItem.split('\t')
@@ -384,32 +341,13 @@ def procesarNewsItemsDadoUsuarioAmplitudIntervaloYk(idUsuario, unIntervalo, unVa
                 # se evalua la linea leida
                 if arrayNewsItem[0] != "":
                     # se evalua si no es la segunda parte de la lista de newsitems que fue cortada
-
-                    """  Este framento es para trata de solucionar el problema de newsitems mal cortados producto de intervalo 1454 de id posición 1, '1hour', k=10 que recuerda 
-                    # se estrae el último elemento que hay en la segunda posicion, para después evaluar si termina con un formato correcto
-                    elUltimoElementoTieneFormatoNIs = False
-                    try:
-                        arrayAux = arrayNewsItemInicial[2].split(';')
-                        ultimoElementoListaNIsRecibidos = arrayAux[len(arrayAux)-1]
-                        print("........ ultimoElementoListaNIsRecibidos: ", ultimoElementoListaNIsRecibidos)
-                        elUltimoElementoTieneFormatoNIs = tieneFormatoNewsItem(ultimoElementoListaNIsRecibidos)
-                        print("===========(111) ultimo de la línea anterior: ", ultimoElementoListaNIsRecibidos, " >>> Repuesta tieneFormatoNI?: ", elUltimoElementoTieneFormatoNIs)
-                    except IndexError:
-                        elUltimoElementoTieneFormatoNIs = True
-                    # elUltimoElementoTieneFormatoNIs = True # TODO cuando esta activa esta línea es igual al previo intento de mejora
-                    """
-
-                    if arrayNewsItem[0][
-                        0] != '(':  # TODO esta segunda condición no tiene que ir aquí   and elUltimoElementoTieneFormatoNIs == True:       # TODO segunda condición sometida a prueba
+                    if arrayNewsItem[0][0] != '(':  # TODO esta segunda condición no tiene que ir aquí   and elUltimoElementoTieneFormatoNIs == True:       # TODO segunda condición sometida a prueba
                         # de verdad es un NUEVO intervalo de newsitems
                         cantidadNewsItemsLeidos += 1
 
                         # se hace esta pregunta porque de lo contrario el primer intervalo que está en posición de procesar (es decir no es vacio-vacio) mostraba como listo luego de la primer parte del mismo
                         if arrayNewsItemInicial[1][:7] != '<vacio>' and arrayNewsItemInicial[2][:7] != '<vacio>':
                             mostrarIntervaloNuevo = True
-                        # print("+++++++++++++++++++++++ nuevo INTERVALO leido ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-                        # arrayNewsItemInicial = arrayNewsItem
-                        # TOD O esListaNewsItemsCortado = False
                     else:
                         esListaNewsItemsCortado = True
 
@@ -419,21 +357,7 @@ def procesarNewsItemsDadoUsuarioAmplitudIntervaloYk(idUsuario, unIntervalo, unVa
 
                 if cantidadNewsItemsLeidos <= (
                         cantidadDeNewsItemsAprocesar + 1):  # se aumenta '1' porque sino queda fuera de prueba
-                    # se procesa el news item
-                    """arrayNewsItem[0]: la primera vez el intervalo y las siguientes un valor en blanco porque por cada hashtag crea una línea
-                      EJEMPLO: 886[2013-08-20 21:00:00-2013-08-20 22:00:00]   // es el numero de intervalo seguido por los extremos del intervalo entre corchetes.
-                    arratNewsItem[1]: la decisión que hizo el usuario seguido del hashtag correspondiente
-                      EJEMPLO: <ignorado>[NAMMASARKARA]
-                    arrayNewsItem[2]: todos los news items que recibió el usuario dentro del intervalo de tiempo
-                      EJEMPLO: (1681267332,NAMMASARKARA,pos)[2013-08-20 11:00:35];(1681287852,NAMMASARKARA,neu)[2013-08-20 11:00:45];(1681287852,NAMMASARKARA,pos)[2013-08-20 11:03:01];(1681369046,NAMMASARKARA,neu)[2013-08-20 11:04:24];(1681329332,NAMMASARKARA,neu)[2013-08-20 11:04:28];(1681466785,NAMMASARKARA,neu)[2013-08-20 11:04:53];(1681369046,NAMMASARKARA,pos)[2013-08-20 11:05:17];(1681418322,NAMMASARKARA,neu)[2013-08-20 11:05:24];(135108603,NAMMASARKARA,neu)[2013-08-20 11:05:32];(1681466785,NAMMASARKARA,pos)[2013-08-20 11:05:50];(1681329332,NAMMASARKARA,pos)[2013-08-20 11:05:58];(1681418322,NAMMASARKARA,pos)[2013-08-20 11:06:15];(1681427760,NAMMASARKARA,neu)[2013-08-20 11:06:52];(1681974854,NAMMASARKARA,neu)[2013-08-20 11:07:38];(1681427760,NAMMASARKARA,pos)[2013-08-20 11:07:41];(1681947012,NAMMASARKARA,neu)[2013-08-20 11:07:46];(1592219599,NAMMASARKARA,neu)[2013-08-20 11:08:14];(37179759,NAMMASARKARA,neu)[2013-08-20 11:08:21];(1592186568,NAMMASARKARA,neu)[2013-08-20 11:08:23];(784406850,NAMMASARKARA,neu)[2013-08-20 11:08:25];(1681947012,NAMMASARKARA,pos)[2013-08-20 11:08:39];(17781689,NAMMASARKARA,pos)[2013-08-20 11:08:40];(1681974854,NAMMASARKARA,pos)[2013-08-20 11:08:50];(1592219599,NAMMASARKARA,pos)[2013-08-20 11:09:14];(1592186568,NAMMASARKARA,pos)[2013-08-20 11:09:21];(17781689,NAMMASARKARA,pos)[2013-08-20 11:09:55];(17781689,NAMMASARKARA,neg)[2013-08-20 11:11:37];(1610813516,NAMMASARKARA,neu)[2013-08-20 11:17:41];(1610828707,NAMMASARKARA,neu)[2013-08-20 11:17:42];(1610819918,NAMMASARKARA,neu)[2013-08-20 11:18:35];(1610813516,NAMMASARKARA,pos)[2013-08-20 11:18:56];(1610828707,NAMMASARKARA,pos)[2013-08-20 11:18:58];(1610819918,NAMMASARKARA,pos)[2013-08-20 11:20:27];(1610855066,NAMMASARKARA,neu)[2013-08-20 11:30:29];(1478183725,NAMMASARKARA,neu)[2013-08-20 11:33:41];(1610855066,NAMMASARKARA,pos)[2013-08-20 11:35:40];(43407467,NAMMASARKARA,neg)[2013-08-20 11:37:37];(1478183725,NAMMASARKARA,pos)[2013-08-20 11:37:42];(1588162976,NAMMASARKARA,neu)[2013-08-20 11:38:05];(17781689,NAMMASARKARA,neg)[2013-08-20 11:38:14];(37179759,NAMMASARKARA,neg)[2013-08-20 11:38:19];(1588162976,NAMMASARKARA,pos)[2013-08-20 11:38:56];(43407467,NAMMASARKARA,neg)[2013-08-20 11:45:27];(135108603,NAMMASARKARA,neg)[2013-08-20 11:45:48];(1588155967,NAMMASARKARA,neu)[2013-08-20 11:47:22];(135108603,NAMMASARKARA,pos)[2013-08-20 11:48:16];(1588155967,NAMMASARKARA,pos)[2013-08-20 11:48:17];(1478265679,NAMMASARKARA,neu)[2013-08-20 11:48:20];(1478265679,NAMMASARKARA,pos)[2013-08-20 11:49:26];(1485816986,NAMMASARKARA,neu)[2013-08-20 11:49:57];(1485816986,NAMMASARKARA,pos)[2013-08-20 11:50:50];(1485806382,NAMMASARKARA,neu)[2013-08-20 11:50:53];(1485806382,NAMMASARKARA,pos)[2013-08-20 11:51:42];(135108603,NAMMASARKARA,pos)[2013-08-20 11:54:31];(135108603,NAMMASARKARA,pos)[2013-08-20 11:56:05];(17781689,NAMMASARKARA,neg)[2013-08-20 12:03:57];(135108603,NAMMASARKARA,neg)[2013-08-20 12:27:29];(135108603,NAMMASARKARA,pos)[2013-08-20 13:05:05]
-                    """
-                    """ IMPORTANTE: 
-                        Al parecer cuando la línea de nees items recibidos es muy larga la corta en dos líneas líneas
-                        Por ejemplo para el usuario con posición de id: 2
-                            --- News item leido (cantidadNewaItemsLeidos - Cantidad de lineas efectivamente leidas  3343 -  44501 ) :  ---  <ignorado>[HARYANAVIJAYMAHARALLY]  ---  (2147483647,HARYANAVIJAYMAHARALLY,pos)[2013-12-01 01:38:57];(2147483647,HARYANAVIJAYMAHARALLY,pos)[2013-12-01 01:42:13];...;(2147483647,HARYANAVIJAYMAHARALLY,neu)[2013-12-01 05:20:48]
-                            --- News item leido (cantidadNewaItemsLeidos - Cantidad de lineas efectivamente leidas  3344 -  44502 ) : (2147483647,HARYANAVIJAYMAHARALLY,neu)[2013-12-01 05:20:51];...;(2147483647,HARYANAVIJAYMAHARALLY,neu)[2013-12-01 05:59:53] ---    ---  
-                        Es claro que es la misma lista de news items cortaodos porque tiempre tienen el mismo hashtag, además en la segunda parte/línea la lista de newsitem aparece en la primer posición/columna de la línea leida-    
-                    """
+                    """ se procesa el news item """
 
                     # si evalúa si la linea leida es lo cortado de una lista de newsItems o no
                     if not (
@@ -443,24 +367,13 @@ def procesarNewsItemsDadoUsuarioAmplitudIntervaloYk(idUsuario, unIntervalo, unVa
                         if mostrarIntervaloNuevo:
                             valorARestar = 1
 
-                        # print("--- Linea (cantidadNewsItemsLeidos, cantidadDeLineasDelArchivoLeidas) \t", (cantidadNewsItemsLeidos - valorARestar), "\t", (cantidadDeLineasDelArchivoLeidas - 1 - cantidadListasConcatenadas), " : ", arrayNewsItemInicial[0], " --- ", arrayNewsItemInicial[1], " --- ", arrayNewsItemInicial[2])    # todo IMPORTANTE: Antes del break más abajo se imprime el último news item del intervalo
                         """  EN ESTA PARTE DE DEBE PROCESAR EL NEWS ITEM """
-                        # procesarNewsItemsEnClasificador(arrayNewsItemInicial)  # TODO ver si verdaramente la necesito a esta función
-                        # se obtienen los arreglos para el clasificador
-
-                        # TODO ver si esto verdaderamente va aqui!!!
-                        # print("___________________________________________________________")
-                        # print(" +++ arrayNewsItemInicial: ", arrayNewsItemInicial)
-
                         # cuando no es el primer hashtag del intervalo la posición arrayNewsItemInicial[0] es en blanco
                         # en ese caso no tiene que procesarse el intervalo, en tod o caso se tomaría el último valor calculado
-                        # if arrayNewsItemInicial[0] != "":
-                        #     intervaloParaFeature = obtenerSoloIntervaloHoras(arrayNewsItemInicial[0])  # El intervalo tiene un formato así:  3349[2013-12-01 12:00:00-2013-12-01 13:00:00]  y con la función se obtiene '12:00:00-13:00:00'
 
                         # se evalua si no es el caso donde el intervalo es totalmente vacio, es decir hizo nada ni recibió nada
                         # en caso de ser vacio-vacio se ignora el intervalo
                         if arrayNewsItemInicial[1][:7] != '<vacio>' and arrayNewsItemInicial[2][:7] != '<vacio>':
-                            # print(">>>arrayNewsItemInicial: ", arrayNewsItemInicial) # TODO después borrar
                             arrayNewsItemQueUneInicialesDeUnIntervalo = arrayNewsItemQueUneInicialesDeUnIntervalo + [
                                 arrayNewsItemInicial]
 
@@ -468,10 +381,7 @@ def procesarNewsItemsDadoUsuarioAmplitudIntervaloYk(idUsuario, unIntervalo, unVa
                         cantidadListasConcatenadas = 0
 
                         if mostrarIntervaloNuevo and arrayNewsItemQueUneInicialesDeUnIntervalo != []:
-                            # print("+++++++++++++++++++++++ nuevo INTERVALO leido ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-                            # print("*** ArregloNewsItem: ", arrayNewsItem)
                             print("*** Arreglo de TODO el intervalo: ", arrayNewsItemQueUneInicialesDeUnIntervalo)
-                            # <<<<<< INICIO parte nueva (pos reunión 01/10)>>>>>>
                             # se tiene que procesar tod.o el intervalo
                             # de la lista de sublistas se extrae la primer sublista que es la que tiene el número de intervalo y la fecha por se la primer sublista
 
@@ -480,8 +390,6 @@ def procesarNewsItemsDadoUsuarioAmplitudIntervaloYk(idUsuario, unIntervalo, unVa
                                     0])  # El intervalo tiene un formato así:  3349[2013-12-01 12:00:00-2013-12-01 13:00:00]  y con la función se obtiene '12:00:00-13:00:00'
                             [arrayHashtags, arrayTarget] = obtenerStatusHashtagNormalizadoYtarget(
                                 arrayNewsItemQueUneInicialesDeUnIntervalo)
-                            print(">.>.> arrayHashtags: ", arrayHashtags)  # TODO después borrar
-                            print(">.>.> arrayTarget: ", arrayTarget)  # TODO después borrar
 
                             # se chequea que ninguna lista tenga elements NaN porque genera error en el clasificador
                             # No tiene sentido chequear la lista sin ocean porque está contenida en la con ocean
@@ -489,7 +397,6 @@ def procesarNewsItemsDadoUsuarioAmplitudIntervaloYk(idUsuario, unIntervalo, unVa
                             listaTargets = listaTargets + arrayTarget
 
                             arrayNewsItemQueUneInicialesDeUnIntervalo = []  # se inicializa el arreglo después de mostrarlo/procesarlo
-                            # <<<<<< FIN parte nueva (pos reunión 01/10)>>>>>>
 
                             mostrarIntervaloNuevo = False
 
@@ -505,42 +412,6 @@ def procesarNewsItemsDadoUsuarioAmplitudIntervaloYk(idUsuario, unIntervalo, unVa
         listaTargets = None
 
     return respuesta, listaFeaturesConOCEAN, listaTargets
-
-
-# recibe un arreglo donde las posiciones
-# [0]: indica el intervalo o en blanco para no repetirlo,
-# [1]: la decición del usuario, cuando es reutilizado [1] tiene algo así:   (1711790197,NAMORON,neg)[2013-10-21 12:15:09];(1711790197,NAMORON,neg)[2013-10-21 12:15:15] y en [2] es distinto de '<vacio>'
-# [2]: la lista de news items que recibió. Puede ser algo así:  (37179759,NAMORON,pos)[2013-10-21 05:34:29];(290587368,NAMORON,neu)[2013-10-21 06:20:02], o '<vacio>'
-def procesarNewsItemsEnClasificador(arrayEntradaNI):  # TODO ¿sirve?
-    # se evalua si es <ignorado>. La estructura cuando es ignorado es algo así:     <ignorado>[TEHELKA]   por eso se corta el string
-    if len(arrayEntradaNI[1]) > 0 and (arrayEntradaNI[1])[:10] != '<ignorado>' and (arrayEntradaNI[1])[:7] != '<vacio>':
-        # El usuario usó un hashtag que le venía en su feed o generó uno nuevo
-        # print(":::::::::::::::::::::::::::::::::::::::::::::::::::::", arrayEntradaNI[1], "::::", len(arrayEntradaNI[1]))
-
-        if arrayEntradaNI[2][:11] == '<inventado>':
-            print("   - - - INVENTADO ", arrayEntradaNI[1], " --- ", arrayEntradaNI[2])
-        else:
-            print("   - - - REUTILIZADO ", arrayEntradaNI[1], " --- ", arrayEntradaNI[2])
-
-        # se separan los news items generados por este usuario
-        arrayDecisiones = arrayEntradaNI[1].split(';')
-        for unaDecision in arrayDecisiones:
-            print("           |", unaDecision)
-
-
-"""
-    else:
-        if (arrayEntradaNI[1])[:10] == '<ignorado>':
-            # es un hashtag ignorado
-            print("*** ", arrayEntradaNI[0], " --- ", arrayEntradaNI[1], " --- ", arrayEntradaNI[2])
-        # else: por el else sería que es un intervalo vacío/cadena vacía
-        else:
-            if arrayEntradaNI[1] == '<vacio>' and arrayEntradaNI[1] == '<vacio>':
-                print("+++ ", arrayEntradaNI[0], " --- ", arrayEntradaNI[1], " --- ", arrayEntradaNI[2])
-            else:
-                # es un ERROR del formato de los datos
-                print("+*+ ", arrayEntradaNI[0], " --- ", arrayEntradaNI[1], " --- ", arrayEntradaNI[2])
-"""
 
 
 # recibe una lista de sublistas con tod.o lo que pasó en el intervalo, donde cada sublista consta de:
@@ -647,7 +518,7 @@ def obtenerStatusHashtagNormalizadoYtarget(arrayNIentradaDeTodoElIntervalo):
                                                                                   cantLlegaNeu)
 
     # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-    # se determina qué valor tendrá el TODO >>> arraySalidaFeatureHashtag
+    # se determina qué valor tendrá el arraySalidaFeatureHashtag
     # >>>> valor para la posición arraySalidaFeatureHashtag[0]
     # para eso se vale del último análisis de sentimientos de las lineas del intervalo
     if queSentimientoSeSumoComoResumenIntervalo == 'neu':
@@ -668,14 +539,12 @@ def obtenerStatusHashtagNormalizadoYtarget(arrayNIentradaDeTodoElIntervalo):
         auxPos = ((cantLlegaPos * 100) / (
                     cantLlegaPos + cantLlegaNeg + cantLlegaNeu)) / 100  # se divide al final entre 100 para pasar de 31.5 a 0.31 y mapaearlo a un intervalo entre [0,1]
         auxNeg = ((cantLlegaNeg * 100) / (cantLlegaPos + cantLlegaNeg + cantLlegaNeu)) / 100
-    print("Cant de pos, neg y neu: ", cantLlegaPos, " - ", cantLlegaNeg, " - ", cantLlegaNeu)
-    print(".-.-.- Antes de intentar obtener los porcentajes - Aux pos y neg: ", auxPos, " - ",
-          auxNeg)  # TODO  después borrar
+
     arraySalidaFeatureHashtag[1] = traducirPorcentajeAnumeroSegunIntervalo(auxPos)
     arraySalidaFeatureHashtag[2] = traducirPorcentajeAnumeroSegunIntervalo(auxNeg)
 
     # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-    # se determina qué valor tendrá el TODO >>> arregloSalidaTarget
+    # se determina qué valor tendrá el arregloSalidaTarget
     # primero se evalua si inventó algo ya que eso tiene prioridad para determinar el target.
     if cantInventados == 0:
         # no inventó nada en el intervalo
@@ -848,19 +717,6 @@ def calcularCantidadIntervalosDadoAmplitud(amplitud):
     return ((FECHA_FIN_DATASET - FECHA_INICIO_DATASET).days + 1) * dictCantidadIntervalosPorDia[amplitud]
 
 
-# dado un cadena de texto, trata de evaluar si tiene el formato de un news item
-# por ejemplo:
-#       VÁLIDO  (22796933,BJPKIPARESHANI,neg)[2013-09-13 03:03:05]
-#           solo se verifica que el primer caracter de la cadena sea '(' y que el último sea ']'
-def tieneFormatoNewsItem(textoAevaluar):
-    # print("(((2))) tieneFormatoNewsItem: ", textoAevaluar)
-    # dir para hacer pruebascon expresiones regulares online        https://pythex.org/
-    respuesta = False
-    if textoAevaluar[0] == '(' and textoAevaluar[len(textoAevaluar) - 1] == ']':
-        respuesta = True
-    return respuesta
-
-
 # Traduce un intervalo de tiempo a un valor numérico, según la amplitud del mismo.
 # Por ejemplo, si intervalo = "02:00:00-03:00:00" cuya amplitud = '1hour', devuelve '2' acorde a al diccionario 'dictIntervalo1horaTraducidoAnumero'
 def traducirIntervaloAvalorNumerico(intervalo, amplitud):
@@ -884,23 +740,15 @@ def utilizarClasificadoresDiversasVariantesFeatures(listaUsuariosProcesados, val
     # Lo que antes era listaFeaturesSinOcean ahora se solamente es igual a listaFeaturesCompleta pero sin los parámetros del DICT_POSICIONES_FEATURES
     listaFeaturesSinOcean = funciones.activarDesactivarFeatures(listaFeaturesCompleta, DICT_POSICIONES_FEATURES)
 
-    print("\n\n LISTAS FINALES de VERDAD:")
-    print("Features FULL: \n", listaFeaturesCompleta)
-    print("ALGUNAS FEATURES: \n", listaFeaturesSinOcean)
-
     # se transforma la lista de usuarios procesados a un string para poder ser guardado en el archivo de salida
     # pasa por ejemplo de [[1,23444],[2,56565]] >> "(1)23444,(2)56565"
     stringUsuariosProcesados = ""
-    print(">>> Lista completa de posiciones e IDs: ", listaUsuariosProcesados)
     for unElem in listaUsuariosProcesados:
         stringUsuariosProcesados += "(" + str(unElem[0]) + ")" + str(unElem[1]) + ","
 
     # se dividen las listas en dos: para entrenar y para probar, acorde al porcentaja que se usa para entrenar
     longitudLista = len(listaFeaturesCompleta)  # se supone que las 3 listas tienen igual cantidad de elementos
     indiceLimiteDePorcentaje = int((longitudLista * PORCENTAJE_APRENDIZAJE) / 100)
-    print("- Total de Samples: ", longitudLista, " --- Para entrenar (", PORCENTAJE_APRENDIZAJE, "%): ",
-          indiceLimiteDePorcentaje, "--- Para probar (", (100 - PORCENTAJE_APRENDIZAJE), "%): ",
-          (longitudLista - indiceLimiteDePorcentaje))
     # --- Se divide listaFeaturesConOcean ---
     listaFeaturesConOceanParaEntrenar = listaFeaturesCompleta[0:indiceLimiteDePorcentaje]
     listaFeaturesConOceanParaProbar = listaFeaturesCompleta[indiceLimiteDePorcentaje:longitudLista]
@@ -1072,13 +920,9 @@ def procesarConClasificadorOneClassDecisionTreeLogistic(listaFeaturesParaEntrena
             clf.fit(listaFeaturesDeterminadoTargetParaEntrenar)  # es para entrenar
         else:
             # los que no son oneclass entrenan distinto
-            clf.fit(listaFeaturesParaEntrenar, listaTargetsParaEntrenar)  # es para entrenar TODO !!!!!!!!!!!!!!!
+            clf.fit(listaFeaturesParaEntrenar, listaTargetsParaEntrenar)  # es para entrenar
 
-        # TODO después ver si algo lo comentado abajo sirve
-        # fileSalidaResultadosClasificadores.write("\nScore_samples ONE CLASS (con fit: listaFeaturesDeterminadoTargetParaEntrenar)\n" + funciones.concatenarListaEnString(scores, ', ') + "\n")
-        # fileSalidaResumenCorrida.write("\n\n Salidas ONE-Class:\nPredict:\n" + funciones.concatenarListaEnString(respuestaPredict, ', ') + "\nScore:\n" + funciones.concatenarListaEnString(scores, ', ') + "\n")
-
-        """ Cálculo de RECALL y PRECISION --- https://thisdata.com/blog/unsupervised-machine-learning-with-one-class-support-vector-machines/ """
+        """ Cálculo de RECALL y PRECISION """
         respuestaPredict = clf.predict(listaFeaturesParaProbar)
         respuestaPredict = funciones.reemplazarValoresEnLista(respuestaPredict, valorABuscar=TARGET_PARA_ONE_CLASS,
                                                      valorNuevo=1,
@@ -1113,31 +957,17 @@ def procesarConClasificadorOneClassDecisionTreeLogistic(listaFeaturesParaEntrena
             [accuracy, precision, recall, f1] = funciones.calcularAccPrecRecF1(listaTargetsParaProbar, respuestaPredict, convertirA1sYmenos1=True, valorInlier=TARGET_PARA_ONE_CLASS) # ************
         else:
             [accuracy, precision, recall, f1] = funciones.calcularAccPrecRecF1(listaTargetsParaProbar, respuestaPredict, convertirA1sYmenos1=True, valorInlier=TARGET_PARA_ONE_CLASS)  # ************
-        """ COMIENZO de prueba siguiendo ejemplo    http://scikit-learn.org/stable/auto_examples/svm/plot_oneclass.html#sphx-glr-auto-examples-svm-plot-oneclass-py """
-        # TODO al parece puedo/tengo que identificar los outliers >> ejemplo X_outliers en http://scikit-learn.org/stable/auto_examples/svm/plot_oneclass.html#sphx-glr-auto-examples-svm-plot-oneclass-py
-        #       en mi ejemplo los outlieras serían los features cuyos targets no sean 4 (complemento de lo que mando en la función fit())
 
-        print("=================================================")
         [listaFeaturesDeterminadoTarget, listaTargetsDeterminadoTarget] = funciones.obtenerFeaturesYTargetsSegunValorTarget(listaFeaturesParaEntrenar, listaTargetsParaEntrenar, TARGET_PARA_ONE_CLASS, True)
         X_train = listaFeaturesDeterminadoTarget
         X_test  = listaFeaturesParaProbar
         [listaFeaturesNODeterminadoTarget, listaTargetsNODeterminadoTarget] = funciones.obtenerFeaturesYTargetsSegunValorTarget(listaFeaturesParaEntrenar, listaTargetsParaEntrenar, TARGET_PARA_ONE_CLASS, False)
         X_outliers = listaFeaturesNODeterminadoTarget
 
-
-        #   - M É T R I C A S -
-        # PRECISION Y RECALL    http://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_fscore_support.html
-        #                           Guía de usuario     http://scikit-learn.org/stable/modules/model_evaluation.html#precision-recall-f-measure-metrics
-        #                                                   precision_score(y_true, y_pred[, labels, …])	Compute the precision
-        #                                                   recall_score(y_true, y_pred[, labels, …])	    Compute the recall
-        # F1                    http://scikit-learn.org/stable/modules/generated/sklearn.metrics.f1_score.html
-        #                           Ejemplo:
-        """ FIN de prueba siguiendo ejemplo    http://scikit-learn.org/stable/auto_examples/svm/plot_oneclass.html#sphx-glr-auto-examples-svm-plot-oneclass-py """
-
         stringColumnaPromFeaturesEntrenamiento = funciones.obtenerPromedioCantidadElementosSublistas(listaFeaturesParaEntrenar, devolverString=True)
         stringColumnaPromFeaturesPrueba        = funciones.obtenerPromedioCantidadElementosSublistas(listaFeaturesParaProbar, devolverString=True)
 
-        stringCantidadInliers  = str(cantidadInliersEnPredict)  + "(" + str(round(cantidadInliersEnPredict  / len(respuestaPredict), 2)) + "%)"
+        stringCantidadInliers  = str(cantidadInliersEnPredict) + "(" + str(round(cantidadInliersEnPredict / len(respuestaPredict), 2)) + "%)"
         stringCantidadOutliers = str(cantidadOutliersEnPredict) + "(" + str(round(cantidadOutliersEnPredict / len(respuestaPredict), 2)) + "%)"
 
         [stringTN, stringFP, stringFN, stringTP] = funciones.calcularTPTNFPFN(respuestaPredict, targs, devolverString=True)
@@ -1150,6 +980,7 @@ def procesarConClasificadorOneClassDecisionTreeLogistic(listaFeaturesParaEntrena
                      "Los in y outliers se cuentan como la cantidad de 1's y -1's en la respuesta de la funcion predict( ), resp.\t" +
                      "Para obtener las metricas (Acc, Prec, Recall, F1)se utilizan dos parametros: targs y preds, donde preds = predict(listaFeaturesParaProbar) y targs = listaTargetsParaProbar pero con los 4 convertidos en 1 y los 0 en -1 (inliers y outliers).\t" +
                      "Los porcentajes de TN, FP, FN, TP se dividiendo por la cantidad de targets (" + str(len(respuestaPredict)) + ").\t")
+
         # se hace al cálculo para ver si es necesario hacer el cálculo de f1ConOcean/f1SinOcean
         # ya que siempre mpieza calculando con todas las features y después con algunas,
         # entonces cuando no sea con todas las feat se está en condicciones de hacer el cálculo (calculos sugeridos por G)
@@ -1188,6 +1019,7 @@ def procesarConClasificadorOneClassDecisionTreeLogistic(listaFeaturesParaEntrena
                                                  tiempoEjecucionOneClass + '\t\t' + infoExtra + '\n')
     return f1
 
+
 """=============== FIN de declaraciones de funciones ===================== """
 for unCriterio in LISTA_CRITERIO_SELECCION_DIF_TARGET:
     CRITERIO_SELECCION_DIF_TARGET = unCriterio
@@ -1197,99 +1029,6 @@ for unCriterio in LISTA_CRITERIO_SELECCION_DIF_TARGET:
     if unCriterio == 100:
         PROCESAR_VERDAD_ID_CANDIDATO = False # porque no se se usa como criterio el 100 de diferencia entonces van a estar involucrados todos los usuario
     main01_recorrerIDpublicadores()
-
-"""" PROBLEMAS
-- Las listas cortadas de news items no siempre es cortada de buena manera,  a veces se corta en cualquier parte:
-    Por ejemplo intervalo 1454 de id posición 1, '1hour', k=10 que recuerda:
-        1454[2013-09-13 13:00:00-2013-09-13 14:00:00] --- (1711790197,BJPKIPARESHANI,neu)[2013-09-13 13:38:53] --- (22796933,BJPKIPARESHANI,neg)[2013-09-13 03:03:05];...;(1477477
-        10,BJPKIPARESHANI,neg)[2013-09-13 12:32:31];(1709752692,BJPKIPARESHANI,pos)[2013-09-13 12:32:31];...
-    SOLUCIÓN con función tieneFormatoNewsItem(...)
-"""
-
-""""______________________"""
-"""" Pruebas clasificador """
-
-def pruebaFijaClasificador():  # ejemplo con José
-    # ver info en esta página     http://scikit-learn.org/stable/modules/cross_validation.html#cross-validation
-    clf = LogisticRegression()
-    listaFeaturesParaEntrenar = [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2, 0.3, 0.5,
-         12],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0, 0.5, 0.5,
-         12],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0.2, 0.3,
-         12],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2, 0.3, 0.5,
-         12],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0.3, 0.6,
-         12],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2, 0.3, 0.5,
-         12],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2, 0.3, 0.5,
-         12],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0, 0.1, 0.9,
-         12],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2, 0.3, 0.5,
-         12],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2, 0.3, 0.5,
-         13],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2, 0.3, 0.5,
-         13],
-        [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2, 0.3, 0.5,
-         13],
-        [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2, 0.3, 0.5,
-         14],
-        [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2, 0.3, 0.5,
-         14],
-        [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2, 0.3, 0.5,
-         14],
-        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2, 0.3, 0.5,
-         14],
-        [0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2, 0.3, 0.5,
-         14],
-        [0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2, 0.3, 0.5,
-         14],
-        [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2, 0.3, 0.5,
-         14]
-    ]
-
-    listaTargetsParaEntrenar = [1, 1, 5, 1, 1, 1, 1, 3, 1, 2, 1, 1, 4, 1, 1, 2, 1, 2, 2]
-
-    listaFeaturesParaProbarClasificador = [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2, 0.3, 0.5,
-         12],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.4, 0.3, 0.3,
-         13],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.4, 0.3, 0.3,
-         13],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.1, 0.3, 0.6,
-         14],
-        [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.2, 0.3, 0.5,
-         14]
-    ]
-    listaTargetsParaProbar = [1, 1, 5, 1, 1]
-
-    # recorrido para entrenar clasificador
-
-    # for unOcean, unHashtagSent, unIntervalo, unTarget in zip(*[iter(listaFeaturesParaEntrenar)]*4):
-    # print(unOcean, " --- ", unHashtagSent, " --- ", unIntervalo, " --- ", unTarget)
-    # print(unOcean + unHashtagSent + unIntervalo + unTarget)
-
-    clf.fit(listaFeaturesParaEntrenar, listaTargetsParaEntrenar)
-    print("____________________")
-
-    # recorrido para probar la predicción
-    # for unOcean, unHashtagSent, unIntervalo in zip(*[iter(listaFeaturesParaProbarClasificador)]*3):
-    # print(unOcean, " --- ", unHashtagSent, " --- ", unIntervalo)
-    # print(unOcean + unHashtagSent + unIntervalo)
-
-    print(clf.score(listaFeaturesParaProbarClasificador, listaTargetsParaProbar))
-
-    # ________________
-    scores = cross_val_score(clf, listaFeaturesParaEntrenar, listaTargetsParaEntrenar, cv=10)
-    print(" Scores: ", scores)
-    print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
-
 
 horaFin = datetime.datetime.now()
 print("Hora de INICIO - FIN: \t ", horaInicio, " \n\t\t\t\t\t\t ", horaFin)
