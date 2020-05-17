@@ -46,7 +46,7 @@ EQUILIBRAR_PRUEBA = False        # True: los features y targets de PRUEBA de cad
                                  # False: no se hace tal corte y se procesan todos los features y targets para PRUEBA.
                                  # El corte se hace solamente para el prcesamiento, pero si se genera en la corrida las listas se guardan las listas completas (sin los cortes de equilibrio)
 # Parámetros para OneClass
-TARGET_PARA_ONE_CLASS      = 4 # Para entrenar el clasificador one_class se usan los features cuyos targeta coincidan con este valor
+TARGET_FOR_ONE_CLASS      = 4 # Para entrenar el clasificador one_class se usan los features cuyos targeta coincidan con este valor
 listaParametroGAMMA        = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1] # constante para el valor de gamma para instanciar el objeto OneClassSVM()
 listaParametroKernelOneC   = ['rbf','linear']
 listaMezcladaKernelYgammas = [{'kernel':'linear'}] + functions.mezclarKernelsYGammas('rbf', listaParametroGAMMA) # para linear no tiene sentido gamma por eso no hay que mezclarlo
@@ -914,7 +914,7 @@ def procesarConClasificadorOneClassDecisionTreeLogistic(listaFeaturesParaEntrena
         horaInicioFit = datetime.datetime.now()
 
         # en la función fit se convoca otra función para obtener solamente aquellos features que tengan un determinado valor de target
-        [listaFeaturesDeterminadoTargetParaEntrenar, listaTargetsDeterminadoTargetParaEntrenar] = functions.obtenerFeaturesYTargetsSegunValorTarget(listaFeaturesParaEntrenar, listaTargetsParaEntrenar, TARGET_PARA_ONE_CLASS, True)
+        [listaFeaturesDeterminadoTargetParaEntrenar, listaTargetsDeterminadoTargetParaEntrenar] = functions.obtenerFeaturesYTargetsSegunValorTarget(listaFeaturesParaEntrenar, listaTargetsParaEntrenar, TARGET_FOR_ONE_CLASS, True)
 
         if tipoClasificador == "OneClassSVM":
             clf.fit(listaFeaturesDeterminadoTargetParaEntrenar)  # es para entrenar
@@ -924,9 +924,9 @@ def procesarConClasificadorOneClassDecisionTreeLogistic(listaFeaturesParaEntrena
 
         """ Cálculo de RECALL y PRECISION """
         respuestaPredict = clf.predict(listaFeaturesParaProbar)
-        respuestaPredict = functions.reemplazarValoresEnLista(respuestaPredict, valorABuscar=TARGET_PARA_ONE_CLASS,
-                                                     valorNuevo=1,
-                                                     buscarPorIgual=True)  # Cambia valorInlier (4's) por 1 porque son los inliers
+        respuestaPredict = functions.reemplazarValoresEnLista(respuestaPredict, valorABuscar=TARGET_FOR_ONE_CLASS,
+                                                              valorNuevo=1,
+                                                              buscarPorIgual=True)  # Cambia valorInlier (4's) por 1 porque son los inliers
         respuestaPredict = functions.reemplazarValoresEnLista(respuestaPredict, valorABuscar=1,
                                                      valorNuevo=-1,
                                                      buscarPorIgual=False)  # Cambia (no 4's) por -1 porque son los outliers
@@ -949,19 +949,19 @@ def procesarConClasificadorOneClassDecisionTreeLogistic(listaFeaturesParaEntrena
 
         # 1: inliers, -1: outliers
         #  train_target, primero se convierten 4 en 1, y luego 0 en -1.
-        targs = functions.reemplazarValoresEnLista(listaTargetsParaProbar, valorABuscar=TARGET_PARA_ONE_CLASS, valorNuevo=1, buscarPorIgual = True) #  Cambia 4's por 1 porque son los inliers
+        targs = functions.reemplazarValoresEnLista(listaTargetsParaProbar, valorABuscar=TARGET_FOR_ONE_CLASS, valorNuevo=1, buscarPorIgual = True) #  Cambia 4's por 1 porque son los inliers
         targs = functions.reemplazarValoresEnLista(targs, valorABuscar=1, valorNuevo=-1, buscarPorIgual = False) #  Cambia 4's por -1 porque son los outliers
 
         [accuracy, precision, recall, f1] = ["<sin valor>", "<sin valor>", "<sin valor>", "<sin valor>"]
         if tipoClasificador == "OneClassSVM":
-            [accuracy, precision, recall, f1] = functions.calcularAccPrecRecF1(listaTargetsParaProbar, respuestaPredict, convertirA1sYmenos1=True, valorInlier=TARGET_PARA_ONE_CLASS) # ************
+            [accuracy, precision, recall, f1] = functions.calcularAccPrecRecF1(listaTargetsParaProbar, respuestaPredict, convertirA1sYmenos1=True, valorInlier=TARGET_FOR_ONE_CLASS) # ************
         else:
-            [accuracy, precision, recall, f1] = functions.calcularAccPrecRecF1(listaTargetsParaProbar, respuestaPredict, convertirA1sYmenos1=True, valorInlier=TARGET_PARA_ONE_CLASS)  # ************
+            [accuracy, precision, recall, f1] = functions.calcularAccPrecRecF1(listaTargetsParaProbar, respuestaPredict, convertirA1sYmenos1=True, valorInlier=TARGET_FOR_ONE_CLASS)  # ************
 
-        [listaFeaturesDeterminadoTarget, listaTargetsDeterminadoTarget] = functions.obtenerFeaturesYTargetsSegunValorTarget(listaFeaturesParaEntrenar, listaTargetsParaEntrenar, TARGET_PARA_ONE_CLASS, True)
+        [listaFeaturesDeterminadoTarget, listaTargetsDeterminadoTarget] = functions.obtenerFeaturesYTargetsSegunValorTarget(listaFeaturesParaEntrenar, listaTargetsParaEntrenar, TARGET_FOR_ONE_CLASS, True)
         X_train = listaFeaturesDeterminadoTarget
         X_test  = listaFeaturesParaProbar
-        [listaFeaturesNODeterminadoTarget, listaTargetsNODeterminadoTarget] = functions.obtenerFeaturesYTargetsSegunValorTarget(listaFeaturesParaEntrenar, listaTargetsParaEntrenar, TARGET_PARA_ONE_CLASS, False)
+        [listaFeaturesNODeterminadoTarget, listaTargetsNODeterminadoTarget] = functions.obtenerFeaturesYTargetsSegunValorTarget(listaFeaturesParaEntrenar, listaTargetsParaEntrenar, TARGET_FOR_ONE_CLASS, False)
         X_outliers = listaFeaturesNODeterminadoTarget
 
         stringColumnaPromFeaturesEntrenamiento = functions.obtenerPromedioCantidadElementosSublistas(listaFeaturesParaEntrenar, devolverString=True)
