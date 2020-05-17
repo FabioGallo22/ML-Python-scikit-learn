@@ -6,24 +6,6 @@ from sklearn import metrics
 import collections
 import numpy as np
 import pickle  # es para poder guardar y escribir listas en archivos
-# dado un idUsuario, valor de k y un intervalo,
-# retorna 3 listas: lista de features con OCEAN, sin OCEAN y target.
-
-def leerListasFeaturesYtarget(idUsuario, valorK, intervalo, pathListasFeatTtarg):
-    listaSalidaFeatureConOcean = None
-    listaSalidaTarget = None
-
-    fileEntradaFeautureConOcean = open(
-        pathListasFeatTtarg + idUsuario + "-" + str(valorK) + "-" + intervalo + "-featureConOCEAN.py",
-        "rb")  # el nombre de cada archivo será "idUsuario-k-intervalo-featureConOCEAN.py"
-    listaSalidaFeatureConOcean = pickle.load(fileEntradaFeautureConOcean)
-
-    fileEntradaTarget = open(
-        pathListasFeatTtarg + idUsuario + "-" + str(valorK) + "-" + intervalo + "-target.py",
-        "rb")  # el nombre de cada archivo será "idUsuario-k-intervalo-target.py"
-    listaSalidaTarget = pickle.load(fileEntradaTarget)
-
-    return listaSalidaFeatureConOcean, listaSalidaTarget
 
 # dado un valor entero elavua si pertenece o no la lista de intervalos
 # Ejemplo de lista ['5-20', '40-60', '90-95']
@@ -64,20 +46,6 @@ def existeElementoEnLista(elem, listaEntrada, procesarDeVerdad):
         respuesta = True
     return respuesta
 
-# listAux = [1,2,3,4,5,77,88]
-# elem = 88
-# if elem in listAux:
-#     print("El ", elem, " esta en la lista!")
-# else:
-#     print("El ", elem, " NO esta en la lista!")
-
-# listaPrueba = ['101-150', '40-60', '90-95']
-# print("Respuesta: ", pertenerAalgunIntervalo(96, listaPrueba))
-# print("Respuesta mayor: ", obtenerMayorValorIntervalo(listaPrueba))
-
-# prueba función generarListaDadoArhivo()
-# print("Salida función generarListaDadoArhivo: ", generarListaDadoArhivo(open("Salidas/IDsCandidatosParaClasificador.txt", "r")))
-
 # dada las dos listas, de la lista de target se cuentan la cantidad de '4' que tiene, y se seleccciona igual cantidad de targets que tienen '0'de manera aleatoria
 # y retorna la lista de target con '4' y '0' en igual cantidades y la lista de features acorde a dicha elección
 def equilibrarTargets(listaFeatures, listaTargets):
@@ -115,22 +83,6 @@ def equilibrarTargets(listaFeatures, listaTargets):
     # print(">>> Listas juntas: ", listaPosicionesAmbosValores)
     return listaFeaturesSalida, listaTargetsSalida
 
-# prueba equilibrarTargets()
-# listaT = [4, 4, 0, 0, 0, 4, 0, 4, 0, 4]
-# listaF = [[8, 1, 1, 1, 1], [9, 2, 2, 2, 2], [10, 3, 3, 3, 3], [11, 4, 4, 4, 4], [12, 5, 5, 5, 5], [13, 6, 6, 6, 6], [14, 7, 7, 7, 7], [15, 8, 8, 8, 8], [16, 9, 9, 9, 9], [17, 10, 10, 10, 10]]
-# [listaFeaturesSalida, listaTargetsSalida] = equilibrarTargets(listaF, listaT)
-# print("============= \n Lista TARGETS: ", listaTargetsSalida, "\n Lista FEATURES: ", listaFeaturesSalida)
-
-
-# dadas dos listas, por ejemplo, [[1,1,1,1],[2,2,2,2]] y [3,4] retorna [[1,1,1,1,3],[2,2,2,2,5]]
-# Es decir, agrega el elemento de la segunda a cada sublista de la primera
-def unirListasFeaturesYTargets(listaF, listaT): # OK!
-    return [sublista + [i] for sublista,i in zip(listaF, listaT)]
-
-# listaPruebaF = [[1,1,1,1],[2,2,2,2],[3,3,3,3],[4,4,4,4],[5,5,5,5],[6,6,6,6],[7,7,7,7],[8,8,8,8]]
-# listaPruebaT = [8,7,6,5,4,3,2,1]
-# print("Salida unirListasFeaturesYTargets(): ", unirListasFeaturesYTargets(listaPruebaF, listaPruebaT))
-# RETORNA>> [[1, 1, 1, 1, 8], [2, 2, 2, 2, 7], [3, 3, 3, 3, 6], [4, 4, 4, 4, 5], [5, 5, 5, 5, 4], [6, 6, 6, 6, 3], [7, 7, 7, 7, 2], [8, 8, 8, 8, 1]]
 
 # dada una lista de entrada de features completa (con todas las features), se avalúa  si
 # cada feature se queda o se va de salida en cada sublista, según está especificado
@@ -153,15 +105,6 @@ def activarDesactivarFeatures(listaFeaturesFull, DICT_POSICIONES_FEATURES): # OK
     listaSalidaFeaturesActivas = [[y for i,y in enumerate(x) if i not in listaPosicionesAEliminar]for x in listaFeaturesFull]
     return listaSalidaFeaturesActivas
 
-# listaPrueba = [[23, 1, 2, 3, 4], [24, 5, 6, 7, 8], [25, 9, 10, 11, 12]]
-# DICT_POSICIONES_FEATURES = {
-#         '0-OCEAN': False,
-#         '1-intervalo': True,
-#         '2-hashtagsRecibe': False,
-#         '3-porcentajePOS': True,
-#         '4-porcentajeNEG': False}
-# print("Respuesta: ", activarDesactivarFeatures(listaPrueba, DICT_POSICIONES_FEATURES))
-# >>> Respueta:  [[1, 3], [5, 7], [9, 11]]
 
 # dada las listas, retorna aquellas features y target cuyos targets tienen (o no) el valor determinado 'valorTargets'
 # Si condicionTarget = True entonces se eligen features y targets que tienen un determinado valorTarget.
@@ -175,11 +118,6 @@ def obtenerFeaturesYTargetsSegunValorTarget(listaFeatures, listaTarget, valorTar
         listaPosicionesConValorTarget = [i for i, e in enumerate(listaTarget) if e != valorTarget]
     return [listaFeatures[index] for index in listaPosicionesConValorTarget], [listaTarget[index] for index in listaPosicionesConValorTarget]
 
-# listaPruebaF = [[0,0,0,0],[1,1,1,1],[2,2,2,2],[3,3,3,3],[4,4,4,4],[5,5,5,5],[6,6,6,6],[7,7,7,7]]
-# listaPruebaT = [5,8,7,4,4,1,3,4]
-# [respuestaF, respuestaT] = obtenerFeaturesYTargetsSegunValorTarget(listaPruebaF, listaPruebaT, 4, False)
-# print("RespuestaF: ", respuestaF)
-# print("RespuestaT: ", respuestaT)
 
 # 'separador' es el character que se utiliza para dividir cada elemento en la lista
 def concatenarListaEnString(lista, separador):
@@ -194,18 +132,6 @@ def concatenarListaEnString(lista, separador):
         cadenaSalida = str(lista)
     return  cadenaSalida
 
-# listaPrueba = [111,23433,444,333]
-# print("Respuesta: ", concatenarListaEnString(listaPrueba, '---'))
-
-def obtenerTraspuesta(listaEntrada): # OK!
-    return list(list(zip(*listaEntrada)))
-
-# prueba traspuesta
-# listaAux = [[0,1,2,3],[4,5,6,7],[8,9,10,11]]
-# listaAux = [[0.1, 590, 64, 5163], [0.2, 656, 102, 5057], [3, 655, 167, 5074]]
-# resp = obtenerTraspuesta(listaAux)
-# print("Prueba: \n", resp)
-# print(resp[0][1])
 
 # en la lista de entrada , reemplaza todas las apariciones de valorABuscar por valorNuevo.
 # igualAlViejo: Si es true se compara por igual, False se compara por distinto
@@ -217,9 +143,6 @@ def reemplazarValoresEnLista(listaEntrada, valorABuscar, valorNuevo, buscarPorIg
         listaRespuesta = [x if x == valorABuscar else valorNuevo for x in listaEntrada]
     return listaRespuesta
 
-# listaAux = [0,0,0,2,3,2,2,2,3,4,10]
-# print("Prueba: ", reemplazarValoresEnLista(listaAux, valorABuscar=2, valorNuevo=9, buscarPorIgual=True))  >>> Respuesta > Prueba:  [0, 0, 0, 9, 3, 9, 9, 9, 3, 4, 10]
-# print("Prueba: ", reemplazarValoresEnLista(listaAux, valorABuscar=2, valorNuevo=9, buscarPorIgual=False)) >>> Respuesta > Prueba:  [9, 9, 9, 2, 9, 2, 2, 2, 9, 9, 9]
 
 def convertirAStringClavesYValoresDeDiccionario(diccionario, separadorClaves, separadorValores): # OK!
     stringClaves = ""
@@ -233,14 +156,6 @@ def convertirAStringClavesYValoresDeDiccionario(diccionario, separadorClaves, se
     stringValores = stringValores[len(separadorValores):]
     return stringClaves, stringValores
 
-# diccAux = {
-#             '0-OCEAN': False,
-#             '1-intervalo': True,
-#             '2-hashtagsRecibe': True,
-#             '3-porcentajePOS': False,
-#             '4-porcentajeNEG': True}
-# [stringC, stringV] = convertirAStringClavesYValoresDeDiccionario(diccAux, '---', '***')
-# print("Claves: ", stringC, "\nValores: ", stringV)
 
 # dada la lista de entrada, cuenta la cantidad de elementos de cada sublista
 # y luego calcula el promedio de cantidad de elementos de las sublistas
@@ -259,9 +174,6 @@ def obtenerPromedioCantidadElementosSublistas(listaEntrada, devolverString):
     else:
         return promedio, cantidadElementos
 
-# listaAux = [[1,2,3,4,5,6],[1,1,1,8,1,1],[3,1,1,2,2,2]]
-# [prom, cantElem] = obtenerPromedioCantidadElementosSublistas(listaAux)
-# print("Promedio: ", prom, " - Cantidad de elementos: ", cantElem, " - Longitud lista: ", len(lis))
 
 # se calculan los TP, TN, FP, FN >> Info vista en http://scikit-learn.org/stable/modules/generated/sklearn.metrics.confusion_matrix.html
 # devolverString cuando es True la respuesta es una salida formateada como string
@@ -307,16 +219,6 @@ def mezclarKernelsYGammas(kernel, listaGammas):
         listaSalida += [{'kernel':str(kernel), 'gamma':unGamma}]
     return  listaSalida
 
-# listaParametroGAMMA = [0.1, 0.2, 0.3]  # constante para el valor de gamma para instanciar el objeto OneClassSVM()
-# listaParametroKernelOneC = ['rbf', 'linear']
-# respuesta = mezclarKernelsYGammas(listaParametroKernelOneC[0], listaParametroGAMMA)
-# print("Salida: ", respuesta)
-# print("Salida una pos: ", respuesta[1]['gamma'])
-# listaMezcladaKernelYgammas = [{'kernel':'linear'}] + respuesta
-# print("listaMezcladaKernelYgammas: ", listaMezcladaKernelYgammas) # ES para hacer prueba de concatenación.
-# >>> Salida:  [{'kernel': 'rbf', 'gamma': 0.1}, {'kernel': 'rbf', 'gamma': 0.2}, {'kernel': 'rbf', 'gamma': 0.3}]
-# >>> Salida una pos:  0.2
-# >>> listaMezcladaKernelYgammas:  [{'kernel': 'linear'}, {'kernel': 'rbf', 'gamma': 0.1}, {'kernel': 'rbf', 'gamma': 0.2}, {'kernel': 'rbf', 'gamma': 0.3}]
 
 def mezclarListas(nombreLista1, lista1, nombreLista2, lista2):
     listaSalida = []
@@ -328,23 +230,7 @@ def mezclarListas(nombreLista1, lista1, nombreLista2, lista2):
                 unValor2 = str(unValor2)
             listaSalida += [{nombreLista1:unValor1, nombreLista2:unValor2}]
     return  listaSalida
-# listaParametroRForestMinSamplesLeaf  = [1, 5, 10, 20]
-# listaParametroRFnEstimators          = [10,50,100]
-# respuesta = mezclarListas('samples_leaf', listaParametroRForestMinSamplesLeaf, 'n_estimators', listaParametroRFnEstimators)
-# for unaRespuesta in respuesta:
-#     print("Respuesta mezcla: ", unaRespuesta)
-# >>> Respuesta mezcla:  {'samples_leaf': '1', 'n_estimators': '10'}
-# >>> Respuesta mezcla:  {'samplse_leaf': '1', 'n_estimators': '50'}
-# >>> Respuesta mezcla:  {'samples_leaf': '1', 'n_estimators': '100'}
-# >>> Respuesta mezcla:  {'samples_leaf': '5', 'n_estimators': '10'}
-# >>> Respuesta mezcla:  {'samples_leaf': '5', 'n_estimators': '50'}
-# >>> Respuesta mezcla:  {'samples_leaf': '5', 'n_estimators': '100'}
-# >>> Respuesta mezcla:  {'samples_leaf': '10', 'n_estimators': '10'}
-# >>> Respuesta mezcla:  {'samples_leaf': '10', 'n_estimators': '50'}
-# >>> Respuesta mezcla:  {'samples_leaf': '10', 'n_estimators': '100'}
-# >>> Respuesta mezcla:  {'samples_leaf': '20', 'n_estimators': '10'}
-# >>> Respuesta mezcla:  {'samples_leaf': '20', 'n_estimators': '50'}
-# >>> Respuesta mezcla:  {'samples_leaf': '20', 'n_estimators': '100'}
+
 
 # genera un diccionario de archivos abiertos para todos los clasificadores en la lista de entrada
 def generarArchivosPorCadaStringEnLista(listaEntrada, pathCarpeta, intervalo, valorK, stringEncabezado):
@@ -356,15 +242,6 @@ def generarArchivosPorCadaStringEnLista(listaEntrada, pathCarpeta, intervalo, va
         if os.path.getsize(auxNombreArchivoConPath) == 0:
             dictDeArchivos[str(unClasif)].write(stringEncabezado)
     return dictDeArchivos
-
-# listaAux = ['LogisticRegression', 'DecisionTreeClassifier', 'OneClassSVM', 'RandomForestClassifier', 'MultinomialNB', 'ComplementNB']
-# intervaloAux = '12hour'
-# valorKaux = '4'
-# pathAux = "C:/Users/fgallo/OneDrive - cs.uns.edu.ar/BR-SNs/Experimentos/clasificadores-INDIA/"+"salidaClasificadoresIndiaRESUMEN (clasificadores individuales)/"
-# stringEncabezadosAux = "Procesar IDs candidatos?\tCriterio candidatos\tEquilibrar entrenamiento?\n"
-# respuesta = generarArchivosPorCadaStringEnLista(listaAux, pathAux, '12hour', 4, stringEncabezadosAux)
-# for unC in listaAux:
-#     respuesta[str(unC)].write("Se guarda en el clas: "+str(unC)+"\n")
 
 
 # dado un diccionario donde las claves son nuevos nombres de columnas y los valores son los nombres de columnas de stringEncabezado
