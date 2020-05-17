@@ -1,6 +1,10 @@
 """ Se leen los IDs de usuarios y después sus archivos de news Items
 
     PRUEBA INICIAL: leer un Id de usuario del archivo correspondiente y luego su archivo de news items generados por php
+
+    This code let you decide if you want to generate all the features and targets without processing ML algorithms.
+    Only you have to set
+
  """
 import pickle  # es para poder guardar y escribir listas en archivos
 from sklearn.ensemble import RandomForestClassifier
@@ -23,7 +27,7 @@ import math # para chequear que los valores de las listas para los clasificadore
 warnings.filterwarnings("ignore")
 from sklearn.linear_model import LogisticRegression
 
-fileEntradaIDpublicadores = open("d:/xampp/htdocs/indiaDS/paper03/idPublicadores.txt", "r")
+fileEntradaIDpublicadores = open("<file_path_here>", "r") #TODO this is the name of a text file wich contains in each line a user ID.
 
 """ ============================================================================== """
 """ ==== Inicio de las variables que hay que inicializar ========================= """
@@ -146,30 +150,7 @@ PATH_FILE_IDs_CANDIDATOS =            "C:/Users/fgallo/OneDrive - cs.uns.edu.ar/
 PATH_SALIDA_ARCHIVOS_POR_CLASI =      "C:/Users/fgallo/OneDrive - cs.uns.edu.ar/BR-SNs/Experimentos/clasificadores-INDIA/salidaClasificadoresIndiaRESUMEN (clasificadores individuales)/"
 """ Para hacer pruebas iniciales con news items que tua tengo generados voy a usar del 1 al 5
  Esos que ya están generados están en la carpeta D:/xampp/htdocs/indiaDS/paper03/04-DividirPorIntervalosTiempo/01-salida-NIsPorIntervalos/
- 
- 
-    --- Cantidades de news items de cada usuario según valor de k y del intervalo ---
-    Id - intervalo - k - cantidad news items:  1711790197  --  15min  --  10  -- 1127786
-    Id - intervalo - k - cantidad news items:  1711790197  --  15min  --  20  -- 1804068
-    Id - intervalo - k - cantidad news items:  1711790197  --  15min  --  40  -- 2941676
-    Id - intervalo - k - cantidad news items:  1711790197  --  30min  --  10  --  902131
-    Id - intervalo - k - cantidad news items:  1711790197  --  30min  --  20  -- 1470882
-    Id - intervalo - k - cantidad news items:  1711790197  --  30min  --  40  -- 2430680
-    Id - intervalo - k - cantidad news items:  1711790197  --  1hour  --  10  --  738284
-    Id - intervalo - k - cantidad news items:  1711790197  --  1hour  --  20  -- 1048576
-    Id - intervalo - k - cantidad news items:  1711790197  --  1hour  --  40  -- 2009152
-    
-    Id - intervalo - k - cantidad news items:  1659341478  --  15min  --  10  --  253996
-    Id - intervalo - k - cantidad news items:  1659341478  --  15min  --  20  --  383508
-    Id - intervalo - k - cantidad news items:  1659341478  --  15min  --  40  --  607494
-    Id - intervalo - k - cantidad news items:  1659341478  --  30min  --  10  --  191771
-    Id - intervalo - k - cantidad news items:  1659341478  --  30min  --  20  --  303751
-    Id - intervalo - k - cantidad news items:  1659341478  --  30min  --  40  --  497672
-    Id - intervalo - k - cantidad news items:  1659341478  --  1hour  --  10  --  152134
-    Id - intervalo - k - cantidad news items:  1659341478  --  1hour  --  20  --  248842
-    Id - intervalo - k - cantidad news items:  1659341478  --  1hour  --  40  --  413480 
- """
-"""=============================================================================="""
+ =============================================================================="""
 horaInicio = datetime.datetime.now()
 print("Hora de INICIO: ", horaInicio)
 
