@@ -35,27 +35,31 @@ Here starts a set of values that need to be set accoding to certain variations i
 inputFileUsersIDs = open("<file_path_here>", "r") # TODO this is the name of a text file wich contains in each line a user ID.
 PROCESS_CLASSIFIER = True # This is useful, for instance, for running this code to generate the lists of features and targets of users.
 classifiersToUseList = ['LogisticRegression', 'DecisionTreeClassifier', 'OneClassSVM', 'RandomForestClassifier', 'MultinomialNB', 'ComplementNB']
-PROCESAR_VERDAD_ID_CANDIDATO = True # *** después poner True  # cuando esta falso se procesan todos los elementos de listaIntervalosAProcesar, si es True solamente los que estan en la lista de candidatos
-LISTA_CRITERIO_SELECCION_DIF_TARGET = [50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100] # These are the 'spread' values. Each value determines which user are going to be part of the prediction task.
-EQUILIBRAR_ENTRENAMIENTO = True # True # True: los features y targets de ENTRENAR de cada usuario se acortan de tal manera que el target tenga igual cantidad de 4's y 0's.
+PROCESS_CANDIDATE_ID = True # *** después poner True  # cuando esta falso se procesan todos los elementos de intervalsForProcessingList, si es True solamente los que estan en la lista de candidatos
+SELECTION_CRITERIA_DIF_TARGET_LIST = [50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100] # These are the 'spread' values. Each value determines which user are going to be part of the prediction task.
+BALANCE_TRAINING = True # True # True: los features y targets de ENTRENAR de cada usuario se acortan de tal manera que el target tenga igual cantidad de 4's y 0's.
                                  # False: no se hace tal corte y se procesan todos los features y targets para ENTRENAR.
                                  # El corte se hace solamente para el prcesamiento, pero si se genera en la corrida las listas se guardan las listas completas (sin los cortes de equilibrio)
-EQUILIBRAR_PRUEBA = False        # True: los features y targets de PRUEBA de cada usuario se acortan de tal manera que el target tenga igual cantidad de 4's y 0's.
+BALANCE_TEST = False        # True: los features y targets de PRUEBA de cada usuario se acortan de tal manera que el target tenga igual cantidad de 4's y 0's.
                                  # False: no se hace tal corte y se procesan todos los features y targets para PRUEBA.
                                  # El corte se hace solamente para el prcesamiento, pero si se genera en la corrida las listas se guardan las listas completas (sin los cortes de equilibrio)
+
 # Parámetros para OneClass
 TARGET_FOR_ONE_CLASS      = 4 # Para entrenar el clasificador one_class se usan los features cuyos targeta coincidan con este valor
-listaParametroGAMMA        = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1] # constante para el valor de gamma para instanciar el objeto OneClassSVM()
-listaParametroKernelOneC   = ['rbf','linear']
-listaMezcladaKernelYgammas = [{'kernel':'linear'}] + functions.mezclarKernelsYGammas('rbf', listaParametroGAMMA) # para linear no tiene sentido gamma por eso no hay que mezclarlo
+GammaParamList        = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1] # constante para el valor de gamma para instanciar el objeto OneClassSVM()
+KernelOneClassParamList   = ['rbf', 'linear']
+KernelGammasMergeList = [{'kernel': 'linear'}] + functions.mezclarKernelsYGammas('rbf', GammaParamList) # para linear no tiene sentido gamma por eso no hay que mezclarlo
+
 # Parámetros para RandomForests
 listaParametroRForestMinSamplesLeaf  = [1, 5, 10, 20]
 listaParametroRFnEstimators          = [10,50,100]
 listaParametrosMezcladosRandomForest = functions.mezclarListas('min_samples_leaf', listaParametroRForestMinSamplesLeaf, 'n_estimators', listaParametroRFnEstimators)
+
 # Parámetros para MultinomialNB
 listaParametroMultinomialNBalpha      = [0, 0.05, 0.1, 0.15, 0.2, 100] # [0, 0,25, 0.5, 0.75, 1] # [1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3, 3.25, 3.5, 3.75, 4, 4.25, 4.5, 4.75, 5, 8, 10, 20]
 listaParametroMultinomialNBfitPrior   = [True, False]
 listaParametrosMezcladosMultinomialNB = functions.mezclarListas('alpha', listaParametroMultinomialNBalpha, 'fit_prior', listaParametroMultinomialNBfitPrior)
+
 # Parámetros para ComplementNB
 listaParametroComplementNBalpha = [0, 0.05, 0.1, 0.15, 0.2, 10]
 listaParametroComplementNBnorm  = [True, False]
@@ -64,13 +68,12 @@ listaParametrosMezcladosComplementNB = functions.mezclarListas('alpha', listaPar
 # This dictionary specify which features will be considered in the prediction tasks.
 DICT_POSICIONES_FEATURES = {
     '0-OCEAN': True,
-    '1-intervalo': False,
-    '2-hashtagsRecibe': False,
-    '3-porcentajePOS': False,
-    '4-porcentajeNEG': False} # Estructu de cada sublista de FEATURES [[23, 0, 0, 0, 0], [23, 1, 0, 0, 1], [23, 0, 0, 1, 1], ...]
-# INICIO_A_PROCESAR = 400  # id: 1, 2, 9 tienen los newsitems en distintas lineas
-# FIN_A_PROCESAR = 1000
-listaIntervalosAProcesar = ['1-399', '400-1000', '1001-1251', '1501-2000'] # ['1-399', '400-1000', '1001-1251', '1501-2000']
+    '1-Interval': False,
+    '2-receivedHashtags': False,
+    '3-percentPOS': False,
+    '4-percentNEG': False} # Estructura de cada sublista de FEATURES [[23, 0, 0, 0, 0], [23, 1, 0, 0, 1], [23, 0, 0, 1, 1], ...]
+
+intervalsForProcessingList = ['1-399', '400-1000', '1001-1251', '1501-2000'] # These are the position line intervals from de input file with the users' IDs.
 cantidadesKqueRecuerda = [4]  # Ejemplo [10, 20, 40] Con el cambio de un clasificador para todos los usuarios, siempre debera correrse el programa con un valor en esta lista.
 amplitudesDeIntervalosQueRecuerda = ['12hour']  # los intervalos pueden ser por ejemplo: ['15min', '30min', '1hour']
 PORCENTAJE_APRENDIZAJE = 90  # este valor puede ser entre 1 y 100 el cual indica cual será el porcentaje de news items que se usará para entrenamiento del clasificador
@@ -210,12 +213,12 @@ def main_scanUsersID():
     listaFeatureSinOcean = []
     listaTarget = []
     listaUsuariosProcesadosExitosamente = []  # cada elemento de esta lista es [pos,id] de cada usuario procesado exitosamente
-    maximaPosicionAProcesar = functions.obtenerMayorValorIntervalo(listaIntervalosAProcesar)
+    maximaPosicionAProcesar = functions.obtenerMayorValorIntervalo(intervalsForProcessingList)
     for linea in inputFileUsersIDs:
         posicion += 1
         if posicion <= maximaPosicionAProcesar:
             idUsuario = linea.replace('\n', '')
-            if functions.pertenerAalgunIntervalo(posicion, listaIntervalosAProcesar) and functions.existeElementoEnLista(idUsuario, listaIDsCandidatos, PROCESAR_VERDAD_ID_CANDIDATO):
+            if functions.pertenerAalgunIntervalo(posicion, intervalsForProcessingList) and functions.existeElementoEnLista(idUsuario, listaIDsCandidatos, PROCESS_CANDIDATE_ID):
                 # linea tiene que ser procesada
                 # se elimina el salto de línea del final de la lectura
                 claseOCEAN = obtenerClaseOCEAN32(idUsuario, lineasCorteOCEAN[0])
@@ -760,14 +763,14 @@ def utilizarClasificadoresDiversasVariantesFeatures(listaUsuariosProcesados, val
     # ------------------------
     # Se evalua si se equilibran las listas de features y targets para prueba y/o entrenamiento
     # Se evalua si se pide equilibrar o no
-    if EQUILIBRAR_PRUEBA:
+    if BALANCE_TEST:
         [listaFeaturesConOceanParaProbar, listaTargetsParaProbarNoSeUsa] = functions.equilibrarTargets(
             listaFeaturesConOceanParaProbar,
             listaTargetsParaProbar)  # listaTargetsParaProbarNoSeUsa se llama con un nombre cualquiera porque no será usada ya que TARGET la primera vez no debe ser cortado porque se utiliza con dos listas de features
         [listaFeaturesSinOceanParaProbar, listaTargetsParaProbar] = functions.equilibrarTargets(
             listaFeaturesSinOceanParaProbar, listaTargetsParaProbar)
 
-    if EQUILIBRAR_ENTRENAMIENTO:
+    if BALANCE_TRAINING:
         [listaFeaturesConOceanParaEntrenar, listaTargetsParaEntrenarNoSeUsa] = functions.equilibrarTargets(
             listaFeaturesConOceanParaEntrenar,
             listaTargetsParaEntrenar)  # listaTargetsParaEntrenarNoSeUsa se llama con un nombre cualquiera porque no será usada ya que TARGET la primera vez no debe ser cortado porque se utiliza con dos listas de features
@@ -790,7 +793,7 @@ def utilizarClasificadoresDiversasVariantesFeatures(listaUsuariosProcesados, val
 
         if unClasificador == 'OneClassSVM':
             # es oneClass
-            for unaConfigDParametros in listaMezcladaKernelYgammas:
+            for unaConfigDParametros in KernelGammasMergeList:
                 f1Aux = generateMetricsML(listaFeaturesConOceanParaEntrenar,
                                           listaTargetsParaEntrenar,
                                           listaFeaturesConOceanParaProbar, listaTargetsParaProbar, True,
@@ -989,8 +992,8 @@ def generateMetricsML(listaFeaturesParaEntrenar,
             stringAuxRestaF1 = str(f1 - f1Anterior)
             stringAuxDivF1 = str(f1Anterior / f1)
 
-        fileSalidaResumenTodosClasificadores.write(str(PROCESAR_VERDAD_ID_CANDIDATO) + '\t' + "Dif de "+str(CRITERIO_SELECCION_DIF_TARGET) + '\t' + str(EQUILIBRAR_ENTRENAMIENTO) + '\t' +
-                                                            str(EQUILIBRAR_PRUEBA) + "\t" + stringNombresValores + "\t" + stringParametroConstructor + '\t\t')
+        fileSalidaResumenTodosClasificadores.write(str(PROCESS_CANDIDATE_ID) + '\t' + "Dif de " + str(CRITERIO_SELECCION_DIF_TARGET) + '\t' + str(BALANCE_TRAINING) + '\t' +
+                                                   str(BALANCE_TEST) + "\t" + stringNombresValores + "\t" + stringParametroConstructor + '\t\t')
 
         fileSalidaResumenTodosClasificadores.write(stringUsuariosProcesados + '\t' + str(cantidadUsuariosProcesados) + '\t' + intervalo + '\t' +
                                                  str(valorDeK) + '\t' + stringConTodasFeatures + '\t' + tipoClasificador + '\t' +
@@ -1004,8 +1007,8 @@ def generateMetricsML(listaFeaturesParaEntrenar,
                                                  tiempoEjecucionOneClass + '\t\t' + infoExtra + '\n')
 
         # se guarda en el archivo individual de cada clasificador
-        dictArchivosIndividualesPorClasificador[str(tipoClasificador)].write(str(PROCESAR_VERDAD_ID_CANDIDATO) + '\t' + "Dif de "+str(CRITERIO_SELECCION_DIF_TARGET) + '\t' + str(EQUILIBRAR_ENTRENAMIENTO) + '\t' +
-                                                            str(EQUILIBRAR_PRUEBA) + "\t" + stringNombresValores + "\t" + stringParametroConstructor + '\t\t')
+        dictArchivosIndividualesPorClasificador[str(tipoClasificador)].write(str(PROCESS_CANDIDATE_ID) + '\t' + "Dif de " + str(CRITERIO_SELECCION_DIF_TARGET) + '\t' + str(BALANCE_TRAINING) + '\t' +
+                                                                             str(BALANCE_TEST) + "\t" + stringNombresValores + "\t" + stringParametroConstructor + '\t\t')
         dictArchivosIndividualesPorClasificador[str(tipoClasificador)].write(stringUsuariosProcesados + '\t' + str(cantidadUsuariosProcesados) + '\t' + intervalo + '\t' +
                                                  str(valorDeK) + '\t' + stringConTodasFeatures + '\t' + tipoClasificador + '\t' +
                                                  str(len(listaFeaturesParaEntrenar)) + '\t' + str(len(listaFeaturesParaProbar)) + '\t' +
@@ -1020,13 +1023,13 @@ def generateMetricsML(listaFeaturesParaEntrenar,
 
 
 """=============== FIN de declaraciones de funciones ===================== """
-for unCriterio in LISTA_CRITERIO_SELECCION_DIF_TARGET:
+for unCriterio in SELECTION_CRITERIA_DIF_TARGET_LIST:
     CRITERIO_SELECCION_DIF_TARGET = unCriterio
     # Se abre el archivo adecuado de IDs candidatos si se van a procesar los clasificaodres
     if PROCESS_CLASSIFIER:
         listaIDsCandidatos = functions.generarListaDadoArhivo(open(PATH_FILE_IDs_CANDIDATOS + str(unCriterio) + ".txt", "r"))
     if unCriterio == 100:
-        PROCESAR_VERDAD_ID_CANDIDATO = False # porque no se se usa como criterio el 100 de diferencia entonces van a estar involucrados todos los usuario
+        PROCESS_CANDIDATE_ID = False # porque no se se usa como criterio el 100 de diferencia entonces van a estar involucrados todos los usuario
     main_scanUsersID()
 
 horaFin = datetime.datetime.now()
