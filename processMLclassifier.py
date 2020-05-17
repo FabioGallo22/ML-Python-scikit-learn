@@ -74,13 +74,13 @@ DICT_POSICIONES_FEATURES = {
     '4-percentNEG': False} # Estructura de cada sublista de FEATURES [[23, 0, 0, 0, 0], [23, 1, 0, 0, 1], [23, 0, 0, 1, 1], ...]
 
 intervalsForProcessingList = ['1-399', '400-1000', '1001-1251', '1501-2000'] # These are the position line intervals from de input file with the users' IDs.
-cantidadesKqueRecuerda = [4]  # Ejemplo [10, 20, 40] Con el cambio de un clasificador para todos los usuarios, siempre debera correrse el programa con un valor en esta lista.
-amplitudesDeIntervalosQueRecuerda = ['12hour']  # los intervalos pueden ser por ejemplo: ['15min', '30min', '1hour']
-PORCENTAJE_APRENDIZAJE = 90  # este valor puede ser entre 1 y 100 el cual indica cual será el porcentaje de news items que se usará para entrenamiento del clasificador
+amountKthatRemember = [4] # This is how many intervalas, i.e. 'intervalBreadthThatRemember' is consider in the news items stream for the users.
+intervalBreadthThatRemember = ['12hour']  # the interval can be, for instance: ['15min', '30min', '1hour']
+LEARNING_PERCENT = 90  # This is the percent of news items that will be including in the fitting process.
 
 # These dates are the upper and lower boundaries of user posts in the dataset.
-FECHA_INICIO_DATASET = date(2013, 7, 15)  # estas constantes serán necesarias para hacer el cálculo de la cantidad de intervalos que hay en tod o el dataset
-FECHA_FIN_DATASET    = date(2015, 3, 25)  # los meses no poner cero a la izquierda porque da error porque lo toma como octal
+DATASET_BEGIN_DATE = date(2013, 7, 15)
+DATASET_END_DATE    = date(2015, 3, 25)
 
 PATH_FILE_OCEAN = "C:/Users/fgallo/Dropbox/BR-SNs/05-social operator/IBM Bluemix/pruebas PHP/resultadosOCEAN32categorias-"
 lineasCorteOCEAN = ['punto5']  # para OCEAN se generan distintas líneas de corte
@@ -141,8 +141,8 @@ dictIntervalo12horaTraducidoAnumero = {
 }
 
 PATH_FILES_SALIDA =                   "C:/Users/fgallo/OneDrive - cs.uns.edu.ar/BR-SNs/Experimentos/clasificadores-INDIA/"  # contiene la ruta donde se guardaran las salidas de las corridas.
-PATH_SALIDA_LISTA_FEATURES =          "Salidas/listasFeaturesYtarget/listas-"+str(amplitudesDeIntervalosQueRecuerda[0])+"-k"+str(cantidadesKqueRecuerda[0])+"/"  # esta carpeta contendrá archivos *.py con las listas de features y tergets, el nombre de cada archivo será "idUsuario-k-intervalo.py"
-PATH_FILE_IDs_CANDIDATOS =            "C:/Users/fgallo/OneDrive - cs.uns.edu.ar/BR-SNs/Experimentos/clasificadores-INDIA/SalidasPython/candidatos-"+amplitudesDeIntervalosQueRecuerda[0]+"-k"+str(cantidadesKqueRecuerda[0])+"/IDsCandidatosParaClasificador-"
+PATH_SALIDA_LISTA_FEATURES =          "Salidas/listasFeaturesYtarget/listas-" + str(intervalBreadthThatRemember[0]) + "-k" + str(amountKthatRemember[0]) + "/"  # esta carpeta contendrá archivos *.py con las listas de features y tergets, el nombre de cada archivo será "idUsuario-k-intervalo.py"
+PATH_FILE_IDs_CANDIDATOS =            "C:/Users/fgallo/OneDrive - cs.uns.edu.ar/BR-SNs/Experimentos/clasificadores-INDIA/SalidasPython/candidatos-" + intervalBreadthThatRemember[0] + "-k" + str(amountKthatRemember[0]) + "/IDsCandidatosParaClasificador-"
 PATH_SALIDA_ARCHIVOS_POR_CLASI =      "C:/Users/fgallo/OneDrive - cs.uns.edu.ar/BR-SNs/Experimentos/clasificadores-INDIA/salidaClasificadoresIndiaRESUMEN (clasificadores individuales)/"
 
 horaInicio = datetime.datetime.now()
@@ -153,7 +153,7 @@ stringParaNombreArchivoSalida = ""
 if correrConfiguracionesElegidas:
     stringParaNombreArchivoSalida = "(solo config elegidas)"
 
-auxStringFileYrutaResumenClasificadores = PATH_FILES_SALIDA+"salidaClasificadoresIndiaRESUMEN-"+str(amplitudesDeIntervalosQueRecuerda[0])+",k"+str(cantidadesKqueRecuerda[0])+stringParaNombreArchivoSalida+".txt" # Ejemplo de nombre: salidaClasificadoresIndiaRESUMEN-12hs,k4
+auxStringFileYrutaResumenClasificadores = PATH_FILES_SALIDA +"salidaClasificadoresIndiaRESUMEN-" + str(intervalBreadthThatRemember[0]) + ",k" + str(amountKthatRemember[0]) + stringParaNombreArchivoSalida + ".txt" # Ejemplo de nombre: salidaClasificadoresIndiaRESUMEN-12hs,k4
 fileSalidaResumenTodosClasificadores = open(auxStringFileYrutaResumenClasificadores, "a")
 
 # fileSalidaResumenClasificadoresResumenOtrosClasif = open(PATH_FILE_SALIDA_RESUMEN_OTROS_CLASIFICADORES, "a")
@@ -170,7 +170,7 @@ if os.path.getsize(auxStringFileYrutaResumenClasificadores) == 0:
     # Esta vacio el archivo, se le agregan los encabezados de las columnas
     fileSalidaResumenTodosClasificadores.write(stringEncabezadoResumenTodosClasificadores)
 
-dictArchivosIndividualesPorClasificador = functions.generarArchivosPorCadaStringEnLista(classifiersToUseList, PATH_SALIDA_ARCHIVOS_POR_CLASI, str(amplitudesDeIntervalosQueRecuerda[0]), str(cantidadesKqueRecuerda[0]), stringEncabezadoResumenTodosClasificadores)
+dictArchivosIndividualesPorClasificador = functions.generarArchivosPorCadaStringEnLista(classifiersToUseList, PATH_SALIDA_ARCHIVOS_POR_CLASI, str(intervalBreadthThatRemember[0]), str(amountKthatRemember[0]), stringEncabezadoResumenTodosClasificadores)
 
 listaIDsCandidatos = None
 CRITERIO_SELECCION_DIF_TARGET = None
@@ -227,8 +227,8 @@ def main_scanUsersID():
                 # de lo contrario si mando None al clasificador genera error en tiempo de ejecución
                 if claseOCEAN != None:
                     # Dado el id de usuario publicador leido, Se obtiene el nombres de archivo con su ruta completa acorde a cada uno de las amplitudes de intervalos y los k intervalos que recuerda
-                    for unIntervalo in amplitudesDeIntervalosQueRecuerda:
-                        for unValorDeK in cantidadesKqueRecuerda:
+                    for unIntervalo in intervalBreadthThatRemember:
+                        for unValorDeK in amountKthatRemember:
                             # ya que la lista para usalas luego en los clasificadores una vez generados son guardados en PATH_SALIDA_LISTA_FEATURES
                             # se pregunta si es que no se generó yguardó antes para el usuario, k, e intervalo determinado.
                             # solo si existen los 2 archivos no son generador de nuevo (features con ocean y target)
@@ -289,9 +289,9 @@ def main_scanUsersID():
     print("Sin OCEAN: \n", listaFeatureSinOcean)
     print("Target: \n", listaTarget)
     if listaFeatureConOcean != [] and listaFeatureSinOcean != [] and listaTarget != [] and PROCESS_CLASSIFIER:
-        utilizarClasificadoresDiversasVariantesFeatures(listaUsuariosProcesadosExitosamente, cantidadesKqueRecuerda[0],
-                               amplitudesDeIntervalosQueRecuerda[0],
-                               listaFeatureConOcean, listaTarget)
+        utilizarClasificadoresDiversasVariantesFeatures(listaUsuariosProcesadosExitosamente, amountKthatRemember[0],
+                                                        intervalBreadthThatRemember[0],
+                                                        listaFeatureConOcean, listaTarget)
     else:
         print("No se procesa clasificador!!!!!!")
 
@@ -313,7 +313,7 @@ def procesarNewsItemsDadoUsuarioAmplitudIntervaloYk(idUsuario, unIntervalo, unVa
         fileEntradaNewsItemsDadoIdIntervaloK = open(nombreArchivoNewsItemsSegunIntervaloYvalorDeK, "r", encoding='UTF8')
 
         # en una corrida previa hice la cuenta de cuantos fila de news items tieene cada usuario acorde a las distintas amplitudes de tiempo y k que recuerda
-        # se calcula cual es la cantidad de news items a procesar para el clasificador acorde a porcentaje almacenado en la constante PORCENTAJE_APRENDIZAJE.
+        # se calcula cual es la cantidad de news items a procesar para el clasificador acorde a porcentaje almacenado en la constante LEARNING_PERCENT.
         cantidadDeNewsItemsAprocesar = calcularCantidadIntervalosDadoAmplitud(unIntervalo) # TODO no tiene sentido usar este cálculo.
 
         cantidadNewsItemsLeidos = 0  # es para controlar que solo se lee un porcentaje de todos los intervalor de news items
@@ -715,7 +715,7 @@ def obtenerRutasArhivosNewsItemsDadoIdPublicador(id, amplitudIntervaloTiempo, ca
 
 # Dada una amplitud de intervalo, calcula la cantidad de veces que el intervalo encaja dentro de la duración del dataset.
 def calcularCantidadIntervalosDadoAmplitud(amplitud):
-    return ((FECHA_FIN_DATASET - FECHA_INICIO_DATASET).days + 1) * dictCantidadIntervalosPorDia[amplitud]
+    return ((DATASET_END_DATE - DATASET_BEGIN_DATE).days + 1) * dictCantidadIntervalosPorDia[amplitud]
 
 
 # Traduce un intervalo de tiempo a un valor numérico, según la amplitud del mismo.
@@ -749,7 +749,7 @@ def utilizarClasificadoresDiversasVariantesFeatures(listaUsuariosProcesados, val
 
     # se dividen las listas en dos: para entrenar y para probar, acorde al porcentaja que se usa para entrenar
     longitudLista = len(listaFeaturesCompleta)  # se supone que las 3 listas tienen igual cantidad de elementos
-    indiceLimiteDePorcentaje = int((longitudLista * PORCENTAJE_APRENDIZAJE) / 100)
+    indiceLimiteDePorcentaje = int((longitudLista * LEARNING_PERCENT) / 100)
     # --- Se divide listaFeaturesConOcean ---
     listaFeaturesConOceanParaEntrenar = listaFeaturesCompleta[0:indiceLimiteDePorcentaje]
     listaFeaturesConOceanParaProbar = listaFeaturesCompleta[indiceLimiteDePorcentaje:longitudLista]
@@ -996,29 +996,29 @@ def generateMetricsML(listaFeaturesParaEntrenar,
                                                    str(BALANCE_TEST) + "\t" + stringNombresValores + "\t" + stringParametroConstructor + '\t\t')
 
         fileSalidaResumenTodosClasificadores.write(stringUsuariosProcesados + '\t' + str(cantidadUsuariosProcesados) + '\t' + intervalo + '\t' +
-                                                 str(valorDeK) + '\t' + stringConTodasFeatures + '\t' + tipoClasificador + '\t' +
-                                                 str(len(listaFeaturesParaEntrenar)) + '\t' + str(len(listaFeaturesParaProbar)) + '\t' +
-                                                 stringColumnaPromFeaturesEntrenamiento + '\t' +
-                                                 stringColumnaPromFeaturesPrueba + '\t' + str(PORCENTAJE_APRENDIZAJE) + '\t' +
+                                                   str(valorDeK) + '\t' + stringConTodasFeatures + '\t' + tipoClasificador + '\t' +
+                                                   str(len(listaFeaturesParaEntrenar)) + '\t' + str(len(listaFeaturesParaProbar)) + '\t' +
+                                                   stringColumnaPromFeaturesEntrenamiento + '\t' +
+                                                   stringColumnaPromFeaturesPrueba + '\t' + str(LEARNING_PERCENT) + '\t' +
                                                  (functions.concatenarListaEnString(scores, ', '))[:64] + '\t' + stringCantidadInliers + '\t' +
-                                                 stringCantidadOutliers + '\t' + str(accuracy) + '\t' + str(precision) + '\t' +
-                                                 str(recall) + '\t' + str(f1) + '\t' + stringAuxRestaF1 + '\t' + stringAuxDivF1 + '\t' + str((precision + recall)/2) + '\t' +
-                                                 stringTN + '\t' + stringFP + '\t' + stringFN + '\t' + stringTP + '\t' +
-                                                 tiempoEjecucionOneClass + '\t\t' + infoExtra + '\n')
+                                                   stringCantidadOutliers + '\t' + str(accuracy) + '\t' + str(precision) + '\t' +
+                                                   str(recall) + '\t' + str(f1) + '\t' + stringAuxRestaF1 + '\t' + stringAuxDivF1 + '\t' + str((precision + recall)/2) + '\t' +
+                                                   stringTN + '\t' + stringFP + '\t' + stringFN + '\t' + stringTP + '\t' +
+                                                   tiempoEjecucionOneClass + '\t\t' + infoExtra + '\n')
 
         # se guarda en el archivo individual de cada clasificador
         dictArchivosIndividualesPorClasificador[str(tipoClasificador)].write(str(PROCESS_CANDIDATE_ID) + '\t' + "Dif de " + str(CRITERIO_SELECCION_DIF_TARGET) + '\t' + str(BALANCE_TRAINING) + '\t' +
                                                                              str(BALANCE_TEST) + "\t" + stringNombresValores + "\t" + stringParametroConstructor + '\t\t')
         dictArchivosIndividualesPorClasificador[str(tipoClasificador)].write(stringUsuariosProcesados + '\t' + str(cantidadUsuariosProcesados) + '\t' + intervalo + '\t' +
-                                                 str(valorDeK) + '\t' + stringConTodasFeatures + '\t' + tipoClasificador + '\t' +
-                                                 str(len(listaFeaturesParaEntrenar)) + '\t' + str(len(listaFeaturesParaProbar)) + '\t' +
-                                                 stringColumnaPromFeaturesEntrenamiento + '\t' +
-                                                 stringColumnaPromFeaturesPrueba + '\t' + str(PORCENTAJE_APRENDIZAJE) + '\t' +
+                                                                             str(valorDeK) + '\t' + stringConTodasFeatures + '\t' + tipoClasificador + '\t' +
+                                                                             str(len(listaFeaturesParaEntrenar)) + '\t' + str(len(listaFeaturesParaProbar)) + '\t' +
+                                                                             stringColumnaPromFeaturesEntrenamiento + '\t' +
+                                                                             stringColumnaPromFeaturesPrueba + '\t' + str(LEARNING_PERCENT) + '\t' +
                                                  (functions.concatenarListaEnString(scores, ', '))[:64] + '\t' + stringCantidadInliers + '\t' +
-                                                 stringCantidadOutliers + '\t' + str(accuracy) + '\t' + str(precision) + '\t' +
-                                                 str(recall) + '\t' + str(f1) + '\t' + stringAuxRestaF1 + '\t' + stringAuxDivF1 + '\t' + str((precision + recall)/2) + '\t' +
-                                                 stringTN + '\t' + stringFP + '\t' + stringFN + '\t' + stringTP + '\t' +
-                                                 tiempoEjecucionOneClass + '\t\t' + infoExtra + '\n')
+                                                                             stringCantidadOutliers + '\t' + str(accuracy) + '\t' + str(precision) + '\t' +
+                                                                             str(recall) + '\t' + str(f1) + '\t' + stringAuxRestaF1 + '\t' + stringAuxDivF1 + '\t' + str((precision + recall)/2) + '\t' +
+                                                                             stringTN + '\t' + stringFP + '\t' + stringFN + '\t' + stringTP + '\t' +
+                                                                             tiempoEjecucionOneClass + '\t\t' + infoExtra + '\n')
     return f1
 
 
