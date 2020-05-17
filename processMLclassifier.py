@@ -96,16 +96,15 @@ listaConfiguracionesElegidas = [["LogisticRegression","<no aplica>"],
                                 ["MultinomialNB","alpha=100, fit_prior=True"],
                                 ["ComplementNB","alpha=0.1, norm=True"]]
 
-dictCantidadIntervalosPorDia = {  # Tiene que estar acorde a los valores del arreglo
+amountIntervalIncludedAtDayDict = {
     '15min': 96,
     '30min': 48,
     '1hour': 24,
     '12hour': 2,
     '1day': 1
 }
-# IMPORTANTE: modificar la función traducirIntervaloAvalorNumerico(...) por cada intervalo nuevo
+
 dictIntervalo1horaTraducidoAnumero = {
-    # Para el clasificador no podemos enviar un valor string, entonces se traduce al intervalo de '1hour' a un valor numérico
     '00:00:00-01:00:00': 0,
     '01:00:00-02:00:00': 1,
     '02:00:00-03:00:00': 2,
@@ -132,16 +131,15 @@ dictIntervalo1horaTraducidoAnumero = {
     '23:00:00-00:00:00': 23
 }
 
-dictIntervalo12horaTraducidoAnumero = {
-    # Para el clasificador no podemos enviar un valor string, entonces se traduce al intervalo de '12hour' a un valor numérico
+translation12hoursToNumDict = { # This is related with the value of 'intervalBreadthThatRemember'.
     '00:00:00-12:00:00': 0,
     '12:00:00-00:00:00': 1
 }
 
-PATH_FILES_SALIDA =                   "C:/Users/fgallo/OneDrive - cs.uns.edu.ar/BR-SNs/Experimentos/clasificadores-INDIA/"  # contiene la ruta donde se guardaran las salidas de las corridas.
-PATH_SALIDA_LISTA_FEATURES =          "Salidas/listasFeaturesYtarget/listas-" + str(intervalBreadthThatRemember[0]) + "-k" + str(amountKthatRemember[0]) + "/"  # esta carpeta contendrá archivos *.py con las listas de features y tergets, el nombre de cada archivo será "idUsuario-k-intervalo.py"
-PATH_FILE_IDs_CANDIDATOS =            "C:/Users/fgallo/OneDrive - cs.uns.edu.ar/BR-SNs/Experimentos/clasificadores-INDIA/SalidasPython/candidatos-" + intervalBreadthThatRemember[0] + "-k" + str(amountKthatRemember[0]) + "/IDsCandidatosParaClasificador-"
-PATH_SALIDA_ARCHIVOS_POR_CLASI =      "C:/Users/fgallo/OneDrive - cs.uns.edu.ar/BR-SNs/Experimentos/clasificadores-INDIA/salidaClasificadoresIndiaRESUMEN (clasificadores individuales)/"
+OUTPUT_PATH_FILES = "<file_path_here>"  # Path where are going to be stored the generated files.
+PATH_SALIDA_LISTA_FEATURES = "<local_folder_name>" + str(intervalBreadthThatRemember[0]) + "-k" + str(amountKthatRemember[0]) + "/"  # This project folder is goig to store  *.py files for each user which contains the features and targets as a list. Thus, the process result could be reused.
+PATH_FILE_IDs_CANDIDATOS = "<file_path_here>" + intervalBreadthThatRemember[0] + "-k" + str(amountKthatRemember[0]) + "/IDsCandidatosParaClasificador-" # this is the folder path that contains a IDs' text file for each cutline in 'SELECTION_CRITERIA_DIF_TARGET_LIST'.
+PATH_SALIDA_ARCHIVOS_POR_CLASI = "C:/Users/fgallo/OneDrive - cs.uns.edu.ar/BR-SNs/Experimentos/clasificadores-INDIA/salidaClasificadoresIndiaRESUMEN (clasificadores individuales)/"
 
 horaInicio = datetime.datetime.now()
 print("Hora de INICIO: ", horaInicio)
@@ -151,7 +149,7 @@ stringParaNombreArchivoSalida = ""
 if correrConfiguracionesElegidas:
     stringParaNombreArchivoSalida = "(solo config elegidas)"
 
-auxStringFileYrutaResumenClasificadores = PATH_FILES_SALIDA +"salidaClasificadoresIndiaRESUMEN-" + str(intervalBreadthThatRemember[0]) + ",k" + str(amountKthatRemember[0]) + stringParaNombreArchivoSalida + ".txt" # Ejemplo de nombre: salidaClasificadoresIndiaRESUMEN-12hs,k4
+auxStringFileYrutaResumenClasificadores = OUTPUT_PATH_FILES + "salidaClasificadoresIndiaRESUMEN-" + str(intervalBreadthThatRemember[0]) + ",k" + str(amountKthatRemember[0]) + stringParaNombreArchivoSalida + ".txt" # Ejemplo de nombre: salidaClasificadoresIndiaRESUMEN-12hs,k4
 fileSalidaResumenTodosClasificadores = open(auxStringFileYrutaResumenClasificadores, "a")
 
 # fileSalidaResumenClasificadoresResumenOtrosClasif = open(PATH_FILE_SALIDA_RESUMEN_OTROS_CLASIFICADORES, "a")
@@ -713,7 +711,7 @@ def obtenerRutasArhivosNewsItemsDadoIdPublicador(id, amplitudIntervaloTiempo, ca
 
 # Dada una amplitud de intervalo, calcula la cantidad de veces que el intervalo encaja dentro de la duración del dataset.
 def calcularCantidadIntervalosDadoAmplitud(amplitud):
-    return ((DATASET_END_DATE - DATASET_BEGIN_DATE).days + 1) * dictCantidadIntervalosPorDia[amplitud]
+    return ((DATASET_END_DATE - DATASET_BEGIN_DATE).days + 1) * amountIntervalIncludedAtDayDict[amplitud]
 
 
 # Traduce un intervalo de tiempo a un valor numérico, según la amplitud del mismo.
@@ -723,7 +721,7 @@ def traducirIntervaloAvalorNumerico(intervalo, amplitud):
     if amplitud == '1hour':
         respuesta = dictIntervalo1horaTraducidoAnumero[intervalo]
     if amplitud == '12hour':
-        respuesta = dictIntervalo12horaTraducidoAnumero[intervalo]
+        respuesta = translation12hoursToNumDict[intervalo]
 
     return respuesta
 
