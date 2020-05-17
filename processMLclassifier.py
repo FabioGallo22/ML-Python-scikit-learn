@@ -24,7 +24,7 @@ import os.path  # usado para saber si un detemrinado archivo existe
 import warningssky
 import numpy
 from sklearn import metrics
-import funciones
+import functions
 import math # para chequear que los valores de las listas para los clasificadores sean distintas de NaN  y así evitar el error "ValueError: Input contains NaN, infinity or a value too large for dtype('float64')"
 
 warnings.filterwarnings("ignore")
@@ -49,19 +49,19 @@ EQUILIBRAR_PRUEBA = False        # True: los features y targets de PRUEBA de cad
 TARGET_PARA_ONE_CLASS      = 4 # Para entrenar el clasificador one_class se usan los features cuyos targeta coincidan con este valor
 listaParametroGAMMA        = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1] # constante para el valor de gamma para instanciar el objeto OneClassSVM()
 listaParametroKernelOneC   = ['rbf','linear']
-listaMezcladaKernelYgammas = [{'kernel':'linear'}] + funciones.mezclarKernelsYGammas('rbf', listaParametroGAMMA) # para linear no tiene sentido gamma por eso no hay que mezclarlo
+listaMezcladaKernelYgammas = [{'kernel':'linear'}] + functions.mezclarKernelsYGammas('rbf', listaParametroGAMMA) # para linear no tiene sentido gamma por eso no hay que mezclarlo
 # Parámetros para RandomForests
 listaParametroRForestMinSamplesLeaf  = [1, 5, 10, 20]
 listaParametroRFnEstimators          = [10,50,100]
-listaParametrosMezcladosRandomForest = funciones.mezclarListas('min_samples_leaf', listaParametroRForestMinSamplesLeaf, 'n_estimators', listaParametroRFnEstimators)
+listaParametrosMezcladosRandomForest = functions.mezclarListas('min_samples_leaf', listaParametroRForestMinSamplesLeaf, 'n_estimators', listaParametroRFnEstimators)
 # Parámetros para MultinomialNB
 listaParametroMultinomialNBalpha      = [0, 0.05, 0.1, 0.15, 0.2, 100] # [0, 0,25, 0.5, 0.75, 1] # [1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3, 3.25, 3.5, 3.75, 4, 4.25, 4.5, 4.75, 5, 8, 10, 20]
 listaParametroMultinomialNBfitPrior   = [True, False]
-listaParametrosMezcladosMultinomialNB = funciones.mezclarListas('alpha', listaParametroMultinomialNBalpha, 'fit_prior', listaParametroMultinomialNBfitPrior)
+listaParametrosMezcladosMultinomialNB = functions.mezclarListas('alpha', listaParametroMultinomialNBalpha, 'fit_prior', listaParametroMultinomialNBfitPrior)
 # Parámetros para ComplementNB
 listaParametroComplementNBalpha = [0, 0.05, 0.1, 0.15, 0.2, 10]
 listaParametroComplementNBnorm  = [True, False]
-listaParametrosMezcladosComplementNB = funciones.mezclarListas('alpha', listaParametroComplementNBalpha, 'norm', listaParametroComplementNBnorm)
+listaParametrosMezcladosComplementNB = functions.mezclarListas('alpha', listaParametroComplementNBalpha, 'norm', listaParametroComplementNBnorm)
 
 # This dictionary specify which features will be considered in the prediction tasks.
 DICT_POSICIONES_FEATURES = {
@@ -156,7 +156,7 @@ auxStringFileYrutaResumenClasificadores = PATH_FILES_SALIDA+"salidaClasificadore
 fileSalidaResumenTodosClasificadores = open(auxStringFileYrutaResumenClasificadores, "a")
 
 # fileSalidaResumenClasificadoresResumenOtrosClasif = open(PATH_FILE_SALIDA_RESUMEN_OTROS_CLASIFICADORES, "a")
-[stringNombresClaves, stringNombresValores] = funciones.convertirAStringClavesYValoresDeDiccionario(DICT_POSICIONES_FEATURES, '\t', '\t')
+[stringNombresClaves, stringNombresValores] = functions.convertirAStringClavesYValoresDeDiccionario(DICT_POSICIONES_FEATURES, '\t', '\t')
 stringEncabezadoResumenTodosClasificadores = (
             "Procesar IDs candidatos?\tCriterio candidatos\tEquilibrar entrenamiento?\tEquilibrar prueba?\t" + stringNombresClaves + "\tParametro\t\t" +
             "Lista de (posiciones)usuarios\tCant usuarios\tintervalo\tkQueRecuerda\t" +
@@ -169,7 +169,7 @@ if os.path.getsize(auxStringFileYrutaResumenClasificadores) == 0:
     # Esta vacio el archivo, se le agregan los encabezados de las columnas
     fileSalidaResumenTodosClasificadores.write(stringEncabezadoResumenTodosClasificadores)
 
-dictArchivosIndividualesPorClasificador = funciones.generarArchivosPorCadaStringEnLista(listaClasificadoresAutilizar, PATH_SALIDA_ARCHIVOS_POR_CLASI, str(amplitudesDeIntervalosQueRecuerda[0]), str(cantidadesKqueRecuerda[0]), stringEncabezadoResumenTodosClasificadores)
+dictArchivosIndividualesPorClasificador = functions.generarArchivosPorCadaStringEnLista(listaClasificadoresAutilizar, PATH_SALIDA_ARCHIVOS_POR_CLASI, str(amplitudesDeIntervalosQueRecuerda[0]), str(cantidadesKqueRecuerda[0]), stringEncabezadoResumenTodosClasificadores)
 
 listaIDsCandidatos = None
 # fileSalidaResultadosClasificadores = open(PATH_FILES_SALIDA + "salidaClasificadoresIndia.txt", "a")
@@ -212,12 +212,12 @@ def main01_recorrerIDpublicadores():
     listaFeatureSinOcean = []
     listaTarget = []
     listaUsuariosProcesadosExitosamente = []  # cada elemento de esta lista es [pos,id] de cada usuario procesado exitosamente
-    maximaPosicionAProcesar = funciones.obtenerMayorValorIntervalo(listaIntervalosAProcesar)
+    maximaPosicionAProcesar = functions.obtenerMayorValorIntervalo(listaIntervalosAProcesar)
     for linea in fileEntradaIDpublicadores:
         posicion += 1
         if posicion <= maximaPosicionAProcesar:
             idUsuario = linea.replace('\n', '')
-            if funciones.pertenerAalgunIntervalo(posicion, listaIntervalosAProcesar) and funciones.existeElementoEnLista(idUsuario, listaIDsCandidatos, PROCESAR_VERDAD_ID_CANDIDATO):
+            if functions.pertenerAalgunIntervalo(posicion, listaIntervalosAProcesar) and functions.existeElementoEnLista(idUsuario, listaIDsCandidatos, PROCESAR_VERDAD_ID_CANDIDATO):
                 # linea tiene que ser procesada
                 # se elimina el salto de línea del final de la lectura
                 claseOCEAN = obtenerClaseOCEAN32(idUsuario, lineasCorteOCEAN[0])
@@ -738,7 +738,7 @@ def sacarOceanDeListaFeaturesOcean(listaFeatureConOcean):
 # Dada las listas de entrada, evaluará con distintos clasificadores y almacena los resultados en un archivo de salida
 def utilizarClasificadoresDiversasVariantesFeatures(listaUsuariosProcesados, valorDeK, intervalo, listaFeaturesCompleta, listaTargets):
     # Lo que antes era listaFeaturesSinOcean ahora se solamente es igual a listaFeaturesCompleta pero sin los parámetros del DICT_POSICIONES_FEATURES
-    listaFeaturesSinOcean = funciones.activarDesactivarFeatures(listaFeaturesCompleta, DICT_POSICIONES_FEATURES)
+    listaFeaturesSinOcean = functions.activarDesactivarFeatures(listaFeaturesCompleta, DICT_POSICIONES_FEATURES)
 
     # se transforma la lista de usuarios procesados a un string para poder ser guardado en el archivo de salida
     # pasa por ejemplo de [[1,23444],[2,56565]] >> "(1)23444,(2)56565"
@@ -763,17 +763,17 @@ def utilizarClasificadoresDiversasVariantesFeatures(listaUsuariosProcesados, val
     # Se evalua si se equilibran las listas de features y targets para prueba y/o entrenamiento
     # Se evalua si se pide equilibrar o no
     if EQUILIBRAR_PRUEBA:
-        [listaFeaturesConOceanParaProbar, listaTargetsParaProbarNoSeUsa] = funciones.equilibrarTargets(
+        [listaFeaturesConOceanParaProbar, listaTargetsParaProbarNoSeUsa] = functions.equilibrarTargets(
             listaFeaturesConOceanParaProbar,
             listaTargetsParaProbar)  # listaTargetsParaProbarNoSeUsa se llama con un nombre cualquiera porque no será usada ya que TARGET la primera vez no debe ser cortado porque se utiliza con dos listas de features
-        [listaFeaturesSinOceanParaProbar, listaTargetsParaProbar] = funciones.equilibrarTargets(
+        [listaFeaturesSinOceanParaProbar, listaTargetsParaProbar] = functions.equilibrarTargets(
             listaFeaturesSinOceanParaProbar, listaTargetsParaProbar)
 
     if EQUILIBRAR_ENTRENAMIENTO:
-        [listaFeaturesConOceanParaEntrenar, listaTargetsParaEntrenarNoSeUsa] = funciones.equilibrarTargets(
+        [listaFeaturesConOceanParaEntrenar, listaTargetsParaEntrenarNoSeUsa] = functions.equilibrarTargets(
             listaFeaturesConOceanParaEntrenar,
             listaTargetsParaEntrenar)  # listaTargetsParaEntrenarNoSeUsa se llama con un nombre cualquiera porque no será usada ya que TARGET la primera vez no debe ser cortado porque se utiliza con dos listas de features
-        [listaFeaturesSinOceanParaEntrenar, listaTargetsParaEntrenar] = funciones.equilibrarTargets(
+        [listaFeaturesSinOceanParaEntrenar, listaTargetsParaEntrenar] = functions.equilibrarTargets(
             listaFeaturesSinOceanParaEntrenar, listaTargetsParaEntrenar)
 
     # Se obtienen los nombres de clasificadores a utilizar acorde a la 'listaClasificadoresAutilizar'
@@ -914,7 +914,7 @@ def procesarConClasificadorOneClassDecisionTreeLogistic(listaFeaturesParaEntrena
         horaInicioFit = datetime.datetime.now()
 
         # en la función fit se convoca otra función para obtener solamente aquellos features que tengan un determinado valor de target
-        [listaFeaturesDeterminadoTargetParaEntrenar, listaTargetsDeterminadoTargetParaEntrenar] = funciones.obtenerFeaturesYTargetsSegunValorTarget(listaFeaturesParaEntrenar, listaTargetsParaEntrenar, TARGET_PARA_ONE_CLASS, True)
+        [listaFeaturesDeterminadoTargetParaEntrenar, listaTargetsDeterminadoTargetParaEntrenar] = functions.obtenerFeaturesYTargetsSegunValorTarget(listaFeaturesParaEntrenar, listaTargetsParaEntrenar, TARGET_PARA_ONE_CLASS, True)
 
         if tipoClasificador == "OneClassSVM":
             clf.fit(listaFeaturesDeterminadoTargetParaEntrenar)  # es para entrenar
@@ -924,10 +924,10 @@ def procesarConClasificadorOneClassDecisionTreeLogistic(listaFeaturesParaEntrena
 
         """ Cálculo de RECALL y PRECISION """
         respuestaPredict = clf.predict(listaFeaturesParaProbar)
-        respuestaPredict = funciones.reemplazarValoresEnLista(respuestaPredict, valorABuscar=TARGET_PARA_ONE_CLASS,
+        respuestaPredict = functions.reemplazarValoresEnLista(respuestaPredict, valorABuscar=TARGET_PARA_ONE_CLASS,
                                                      valorNuevo=1,
                                                      buscarPorIgual=True)  # Cambia valorInlier (4's) por 1 porque son los inliers
-        respuestaPredict = funciones.reemplazarValoresEnLista(respuestaPredict, valorABuscar=1,
+        respuestaPredict = functions.reemplazarValoresEnLista(respuestaPredict, valorABuscar=1,
                                                      valorNuevo=-1,
                                                      buscarPorIgual=False)  # Cambia (no 4's) por -1 porque son los outliers
 
@@ -938,7 +938,7 @@ def procesarConClasificadorOneClassDecisionTreeLogistic(listaFeaturesParaEntrena
             scores = clf.score(listaFeaturesParaProbar, listaTargetsParaProbar)
 
         print("Respuesta predict (con listaFeaturesParaProbar): \n",
-              funciones.concatenarListaEnString(respuestaPredict, ', '))
+              functions.concatenarListaEnString(respuestaPredict, ', '))
 
         cantidadInliersEnPredict = len([i for i, e in enumerate(respuestaPredict) if e == 1])
         cantidadOutliersEnPredict = len([i for i, e in enumerate(respuestaPredict) if e == -1])
@@ -949,28 +949,28 @@ def procesarConClasificadorOneClassDecisionTreeLogistic(listaFeaturesParaEntrena
 
         # 1: inliers, -1: outliers
         #  train_target, primero se convierten 4 en 1, y luego 0 en -1.
-        targs = funciones.reemplazarValoresEnLista(listaTargetsParaProbar, valorABuscar=TARGET_PARA_ONE_CLASS, valorNuevo=1, buscarPorIgual = True) #  Cambia 4's por 1 porque son los inliers
-        targs = funciones.reemplazarValoresEnLista(targs, valorABuscar=1, valorNuevo=-1, buscarPorIgual = False) #  Cambia 4's por -1 porque son los outliers
+        targs = functions.reemplazarValoresEnLista(listaTargetsParaProbar, valorABuscar=TARGET_PARA_ONE_CLASS, valorNuevo=1, buscarPorIgual = True) #  Cambia 4's por 1 porque son los inliers
+        targs = functions.reemplazarValoresEnLista(targs, valorABuscar=1, valorNuevo=-1, buscarPorIgual = False) #  Cambia 4's por -1 porque son los outliers
 
         [accuracy, precision, recall, f1] = ["<sin valor>", "<sin valor>", "<sin valor>", "<sin valor>"]
         if tipoClasificador == "OneClassSVM":
-            [accuracy, precision, recall, f1] = funciones.calcularAccPrecRecF1(listaTargetsParaProbar, respuestaPredict, convertirA1sYmenos1=True, valorInlier=TARGET_PARA_ONE_CLASS) # ************
+            [accuracy, precision, recall, f1] = functions.calcularAccPrecRecF1(listaTargetsParaProbar, respuestaPredict, convertirA1sYmenos1=True, valorInlier=TARGET_PARA_ONE_CLASS) # ************
         else:
-            [accuracy, precision, recall, f1] = funciones.calcularAccPrecRecF1(listaTargetsParaProbar, respuestaPredict, convertirA1sYmenos1=True, valorInlier=TARGET_PARA_ONE_CLASS)  # ************
+            [accuracy, precision, recall, f1] = functions.calcularAccPrecRecF1(listaTargetsParaProbar, respuestaPredict, convertirA1sYmenos1=True, valorInlier=TARGET_PARA_ONE_CLASS)  # ************
 
-        [listaFeaturesDeterminadoTarget, listaTargetsDeterminadoTarget] = funciones.obtenerFeaturesYTargetsSegunValorTarget(listaFeaturesParaEntrenar, listaTargetsParaEntrenar, TARGET_PARA_ONE_CLASS, True)
+        [listaFeaturesDeterminadoTarget, listaTargetsDeterminadoTarget] = functions.obtenerFeaturesYTargetsSegunValorTarget(listaFeaturesParaEntrenar, listaTargetsParaEntrenar, TARGET_PARA_ONE_CLASS, True)
         X_train = listaFeaturesDeterminadoTarget
         X_test  = listaFeaturesParaProbar
-        [listaFeaturesNODeterminadoTarget, listaTargetsNODeterminadoTarget] = funciones.obtenerFeaturesYTargetsSegunValorTarget(listaFeaturesParaEntrenar, listaTargetsParaEntrenar, TARGET_PARA_ONE_CLASS, False)
+        [listaFeaturesNODeterminadoTarget, listaTargetsNODeterminadoTarget] = functions.obtenerFeaturesYTargetsSegunValorTarget(listaFeaturesParaEntrenar, listaTargetsParaEntrenar, TARGET_PARA_ONE_CLASS, False)
         X_outliers = listaFeaturesNODeterminadoTarget
 
-        stringColumnaPromFeaturesEntrenamiento = funciones.obtenerPromedioCantidadElementosSublistas(listaFeaturesParaEntrenar, devolverString=True)
-        stringColumnaPromFeaturesPrueba        = funciones.obtenerPromedioCantidadElementosSublistas(listaFeaturesParaProbar, devolverString=True)
+        stringColumnaPromFeaturesEntrenamiento = functions.obtenerPromedioCantidadElementosSublistas(listaFeaturesParaEntrenar, devolverString=True)
+        stringColumnaPromFeaturesPrueba        = functions.obtenerPromedioCantidadElementosSublistas(listaFeaturesParaProbar, devolverString=True)
 
         stringCantidadInliers  = str(cantidadInliersEnPredict) + "(" + str(round(cantidadInliersEnPredict / len(respuestaPredict), 2)) + "%)"
         stringCantidadOutliers = str(cantidadOutliersEnPredict) + "(" + str(round(cantidadOutliersEnPredict / len(respuestaPredict), 2)) + "%)"
 
-        [stringTN, stringFP, stringFN, stringTP] = funciones.calcularTPTNFPFN(respuestaPredict, targs, devolverString=True)
+        [stringTN, stringFP, stringFN, stringTP] = functions.calcularTPTNFPFN(respuestaPredict, targs, devolverString=True)
 
         horaFinOneClass = datetime.datetime.now()
         tiempoEjecucionOneClass = str(horaFinOneClass - horaInicioOneClass)
@@ -998,7 +998,7 @@ def procesarConClasificadorOneClassDecisionTreeLogistic(listaFeaturesParaEntrena
                                                  str(len(listaFeaturesParaEntrenar)) + '\t' + str(len(listaFeaturesParaProbar)) + '\t' +
                                                  stringColumnaPromFeaturesEntrenamiento + '\t' +
                                                  stringColumnaPromFeaturesPrueba + '\t' + str(PORCENTAJE_APRENDIZAJE) + '\t' +
-                                                 (funciones.concatenarListaEnString(scores, ', '))[:64] + '\t' + stringCantidadInliers + '\t' +
+                                                 (functions.concatenarListaEnString(scores, ', '))[:64] + '\t' + stringCantidadInliers + '\t' +
                                                  stringCantidadOutliers + '\t' + str(accuracy) + '\t' + str(precision) + '\t' +
                                                  str(recall) + '\t' + str(f1) + '\t' + stringAuxRestaF1 + '\t' + stringAuxDivF1 + '\t' + str((precision + recall)/2) + '\t' +
                                                  stringTN + '\t' + stringFP + '\t' + stringFN + '\t' + stringTP + '\t' +
@@ -1012,7 +1012,7 @@ def procesarConClasificadorOneClassDecisionTreeLogistic(listaFeaturesParaEntrena
                                                  str(len(listaFeaturesParaEntrenar)) + '\t' + str(len(listaFeaturesParaProbar)) + '\t' +
                                                  stringColumnaPromFeaturesEntrenamiento + '\t' +
                                                  stringColumnaPromFeaturesPrueba + '\t' + str(PORCENTAJE_APRENDIZAJE) + '\t' +
-                                                 (funciones.concatenarListaEnString(scores, ', '))[:64] + '\t' + stringCantidadInliers + '\t' +
+                                                 (functions.concatenarListaEnString(scores, ', '))[:64] + '\t' + stringCantidadInliers + '\t' +
                                                  stringCantidadOutliers + '\t' + str(accuracy) + '\t' + str(precision) + '\t' +
                                                  str(recall) + '\t' + str(f1) + '\t' + stringAuxRestaF1 + '\t' + stringAuxDivF1 + '\t' + str((precision + recall)/2) + '\t' +
                                                  stringTN + '\t' + stringFP + '\t' + stringFN + '\t' + stringTP + '\t' +
@@ -1025,7 +1025,7 @@ for unCriterio in LISTA_CRITERIO_SELECCION_DIF_TARGET:
     CRITERIO_SELECCION_DIF_TARGET = unCriterio
     # Se abre el archivo adecuado de IDs candidatos si se van a procesar los clasificaodres
     if PROCESAR_CLASIFICADOR:
-        listaIDsCandidatos = funciones.generarListaDadoArhivo(open(PATH_FILE_IDs_CANDIDATOS + str(unCriterio) + ".txt", "r"))
+        listaIDsCandidatos = functions.generarListaDadoArhivo(open(PATH_FILE_IDs_CANDIDATOS + str(unCriterio) + ".txt", "r"))
     if unCriterio == 100:
         PROCESAR_VERDAD_ID_CANDIDATO = False # porque no se se usa como criterio el 100 de diferencia entonces van a estar involucrados todos los usuario
     main01_recorrerIDpublicadores()
