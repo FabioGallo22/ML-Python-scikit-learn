@@ -198,7 +198,7 @@ def leerListasFeaturesYtarget(idUsuario, valorK, intervalo):
     return listaSalidaFeatureConOcean, listaSalidaTarget
 
 # Recorre/procesa acorde a las posiciones que están contenidos en la listaIntervalosProcesar
-def main_scanUsersID():
+def mainScanUsersID():
     posicion = 0
     listaFeatureConOcean = []
     listaFeatureSinOcean = []
@@ -209,7 +209,7 @@ def main_scanUsersID():
         posicion += 1
         if posicion <= maximaPosicionAProcesar:
             idUsuario = linea.replace('\n', '')
-            if functions.pertenerAalgunIntervalo(posicion, intervalsForProcessingList) and functions.existeElementoEnLista(idUsuario, listaIDsCandidatos, PROCESS_CANDIDATE_ID):
+            if functions.belongsToSomeInterval(posicion, intervalsForProcessingList) and functions.existeElementoEnLista(idUsuario, listaIDsCandidatos, PROCESS_CANDIDATE_ID):
                 # linea tiene que ser procesada
                 # se elimina el salto de línea del final de la lectura
                 claseOCEAN = obtenerClaseOCEAN32(idUsuario, OCEANcutline[0])
@@ -275,16 +275,12 @@ def main_scanUsersID():
     # con sus respectivos features y targets
     # si tod.o salió bien, se tienen las 3 listas (ya sean recién generadas o ledas de archivos)
     inputFileUsersIDs.seek(0)
-    print("\n\n LISTAS FINALES:")
-    print("Con OCEAN: \n", listaFeatureConOcean)
-    print("Sin OCEAN: \n", listaFeatureSinOcean)
-    print("Target: \n", listaTarget)
     if listaFeatureConOcean != [] and listaFeatureSinOcean != [] and listaTarget != [] and PROCESS_CLASSIFIER:
         utilizarClasificadoresDiversasVariantesFeatures(listaUsuariosProcesadosExitosamente, amountKthatRemember[0],
                                                         intervalBreadthThatRemember[0],
                                                         listaFeatureConOcean, listaTarget)
     else:
-        print("No se procesa clasificador!!!!!!")
+        print("No se procesa clasificador!")
 
 # Dados un usuario, intervalo y cantidad de k intervalos que recuerda, procesa el archivo de news items correspondiente
 # Retorna falso si no existe el archivo del usuario
@@ -333,7 +329,7 @@ def procesarNewsItemsDadoUsuarioAmplitudIntervaloYk(idUsuario, unIntervalo, unVa
                 # se evalua la linea leida
                 if arrayNewsItem[0] != "":
                     # se evalua si no es la segunda parte de la lista de newsitems que fue cortada
-                    if arrayNewsItem[0][0] != '(':  # TODO esta segunda condición no tiene que ir aquí   and elUltimoElementoTieneFormatoNIs == True:       # TODO segunda condición sometida a prueba
+                    if arrayNewsItem[0][0] != '(':
                         # de verdad es un NUEVO intervalo de newsitems
                         cantidadNewsItemsLeidos += 1
 
@@ -349,9 +345,9 @@ def procesarNewsItemsDadoUsuarioAmplitudIntervaloYk(idUsuario, unIntervalo, unVa
 
                 if cantidadNewsItemsLeidos <= (
                         cantidadDeNewsItemsAprocesar + 1):  # se aumenta '1' porque sino queda fuera de prueba
-                    """ se procesa el news item """
+                    """ news item is processed """
 
-                    # si evalúa si la linea leida es lo cortado de una lista de newsItems o no
+                    # se evalúa si la linea leida es lo cortado de una lista de newsItems o no
                     if not (
                             esListaNewsItemsCortado) and cantidadNewsItemsLeidos > 1:  # la segunda pregunta es porque de lo contrario muestra ceros en los y vacios
                         # dependiendo del si se va a mostrar un nuevo intervalo será el valor de la variable 'cantidadNewsItemsLeidos'. Si es nuevo intervalo se resta 1
@@ -359,7 +355,6 @@ def procesarNewsItemsDadoUsuarioAmplitudIntervaloYk(idUsuario, unIntervalo, unVa
                         if mostrarIntervaloNuevo:
                             valorARestar = 1
 
-                        """  EN ESTA PARTE DE DEBE PROCESAR EL NEWS ITEM """
                         # cuando no es el primer hashtag del intervalo la posición arrayNewsItemInicial[0] es en blanco
                         # en ese caso no tiene que procesarse el intervalo, en tod o caso se tomaría el último valor calculado
 
@@ -373,7 +368,6 @@ def procesarNewsItemsDadoUsuarioAmplitudIntervaloYk(idUsuario, unIntervalo, unVa
                         cantidadListasConcatenadas = 0
 
                         if mostrarIntervaloNuevo and arrayNewsItemQueUneInicialesDeUnIntervalo != []:
-                            print("*** Arreglo de TODO el intervalo: ", arrayNewsItemQueUneInicialesDeUnIntervalo)
                             # se tiene que procesar tod.o el intervalo
                             # de la lista de sublistas se extrae la primer sublista que es la que tiene el número de intervalo y la fecha por se la primer sublista
 
@@ -394,9 +388,9 @@ def procesarNewsItemsDadoUsuarioAmplitudIntervaloYk(idUsuario, unIntervalo, unVa
 
                 else:
                     break  # así se evita seguir leyendo líneas innecesariamente
-            print("cantidadDeLineasDelArchivoLeidas", cantidadDeLineasDelArchivoLeidas)
+
         except UnicodeDecodeError as error:
-            print("ERROR de UnicodeDecodeError!!! Id usuario: ", idUsuario)
+            print("UnicodeDecodeError! User ID: ", idUsuario)
     else:
         # no existe el archivo para el id-intervalo-k dados
         respuesta = False
@@ -447,10 +441,8 @@ def obtenerStatusHashtagNormalizadoYtarget(arrayNIentradaDeTodoElIntervalo):
         cantSublistas += 1
         # . . . . . . . . . . . . . . . . . . . . . . . . .
         # . . . procesamiento para el arregloFeatures . . .
-        # . . . . (se procesa lo que le LLEGA). . . . . . .
 
         # se evalua que haya al menos un NIs en la entrada
-        # print ("... UnaSublista: ", unaSublista)
         if unaSublista[2][:11] != '<inventado>':
             # al menos hay un NIs que le llega para este hashtag
             arrayNewsItemQueLeLLegan = unaSublista[2].split(
@@ -476,12 +468,6 @@ def obtenerStatusHashtagNormalizadoYtarget(arrayNIentradaDeTodoElIntervalo):
             cantLlegaPos = cantLlegaPos + cantLlegaPosEnUnHashtagDeterminado
             cantLlegaNeg = cantLlegaNeg + cantLlegaNegEnUnHashtagDeterminado
             cantLlegaNeu = cantLlegaNeu + cantLlegaNeuEnUnHashtagDeterminado
-
-            # se termino de procesar toda UNA LINEA de NIs (asociada a un hashtag, ya sae como news item de entrada o Ni generado por el usuario)
-            # se determinada que sentimiento preponderó
-            queSentimientoSeSumo = determinarSentimientoPreponderante(cantLlegaPosEnUnHashtagDeterminado,
-                                                                      cantLlegaNegEnUnHashtagDeterminado,
-                                                                      cantLlegaNeuEnUnHashtagDeterminado)
 
         # . . . . . . . . . . . . . . . . . . . . . . . .
         # . . . procesamiento para el arregloTarget . . .
@@ -509,9 +495,8 @@ def obtenerStatusHashtagNormalizadoYtarget(arrayNIentradaDeTodoElIntervalo):
     queSentimientoSeSumoComoResumenIntervalo = determinarSentimientoPreponderante(cantLlegaPos, cantLlegaNeg,
                                                                                   cantLlegaNeu)
 
-    # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
     # se determina qué valor tendrá el arraySalidaFeatureHashtag
-    # >>>> valor para la posición arraySalidaFeatureHashtag[0]
+    # valor para la posición arraySalidaFeatureHashtag[0]
     # para eso se vale del último análisis de sentimientos de las lineas del intervalo
     if queSentimientoSeSumoComoResumenIntervalo == 'neu':
         arraySalidaFeatureHashtag[0] = 0
@@ -521,7 +506,7 @@ def obtenerStatusHashtagNormalizadoYtarget(arrayNIentradaDeTodoElIntervalo):
         else:
             arraySalidaFeatureHashtag[0] = 2  # es 'neg' por descarte
 
-    # >>>> valor para la posición arraySalidaFeatureHashtag[1] y arraySalidaFeatureHashtag[2]
+    # valor para la posición arraySalidaFeatureHashtag[1] y arraySalidaFeatureHashtag[2]
     # al porcentaje de pos y de neg se pasan a intervalos 0/1/2/3
     # es posible que (cantLlegaPos + cantLlegaNeg + cantLlegaNeu) == 0 cuando tod.o es inventado, por lo tanto puede dar error de división por cero en tiempo de ejecución
     # por eso se verifica la siguiente condición
@@ -535,7 +520,6 @@ def obtenerStatusHashtagNormalizadoYtarget(arrayNIentradaDeTodoElIntervalo):
     arraySalidaFeatureHashtag[1] = traducirPorcentajeAnumeroSegunIntervalo(auxPos)
     arraySalidaFeatureHashtag[2] = traducirPorcentajeAnumeroSegunIntervalo(auxNeg)
 
-    # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
     # se determina qué valor tendrá el arregloSalidaTarget
     # primero se evalua si inventó algo ya que eso tiene prioridad para determinar el target.
     if cantInventados == 0:
@@ -609,27 +593,6 @@ def traducirPorcentajeAnumeroSegunIntervalo(porcentaje):
     return respuesta
 
 
-# Dado el idUsuario y una línea de corte, retorna un arreglo de 32 posiciones, donde 31 son '0' y hay un solo '1'.
-# En caso de no encontrarse el usuario en el archivo retorna 'None'
-def obtenerArrayOCEAN32(idUsuario, lineaCorte):
-    respuesta = None
-    fileEntradaOCEAN = open(PATH_FILE_OCEAN + lineaCorte + ".txt", "r", encoding='UTF8')
-
-    esPrimerLinea = True
-    for unaLinea in fileEntradaOCEAN:
-        # la primer línea debe ser descartada porque es la descripción de las columnas
-        if not (esPrimerLinea):
-            arrayLineaFileOCEAN = unaLinea.split('\t')
-            if arrayLineaFileOCEAN[0] == idUsuario:
-                respuesta = arrayLineaFileOCEAN[1:33]  # se guardan las posiciones de 1...32 inclusive
-                respuesta = [int(x) for x in
-                             respuesta]  # se convierten a todos los elementos en entero porque sino da error en el clasificador
-                break
-        else:
-            esPrimerLinea = False
-    return respuesta
-
-
 # Dado el idUsuario y una línea de corte, retorna un único valor entre [1,32] correspondiente a la posición donde está el valor '1' y todos los demás con '0'.
 # En caso de no encontrarse el usuario en el archivo retorna 'None'
 def obtenerClaseOCEAN32(idUsuario, lineaCorte):
@@ -697,9 +660,8 @@ def obtenerSoloIntervaloHoras(intervaloCompleto):
 # amplitudIntervaloTiempo: amplitud del tiempo que se consideran los intervalos
 # cantidadK: cantidad de k intervalos previos que el usuario puede 'recordar'
 # por ejamplo     obtenerRutasArhivosNewsItemsDadoIdPublicador(1234, 30min, 40) retornaría
-#                       "D:/xampp/htdocs/indiaDS/paper03/04-DividirPorIntervalosTiempo/01-salida-NIsPorIntervalos/30min-k40/1234-30min-k40.txt"
 def obtenerRutasArhivosNewsItemsDadoIdPublicador(id, amplitudIntervaloTiempo, cantidadK):
-    rutaBasicaArchivosDeNewsItems = "D:/xampp/htdocs/indiaDS/paper03/04-DividirPorIntervalosTiempo/01-salida-NIsPorIntervalos/"
+    rutaBasicaArchivosDeNewsItems = "<files_paths_news_items>" # path which contains txt files with the news items of each user.
     return rutaBasicaArchivosDeNewsItems + str(amplitudIntervaloTiempo) + "-k" + str(cantidadK) + "/" + str(
         id) + "-" + str(amplitudIntervaloTiempo) + "-k" + str(cantidadK) + ".txt"
 
@@ -751,7 +713,6 @@ def utilizarClasificadoresDiversasVariantesFeatures(listaUsuariosProcesados, val
     listaTargetsParaEntrenar = listaTargets[0:indiceLimiteDePorcentaje]
     listaTargetsParaProbar = listaTargets[indiceLimiteDePorcentaje:longitudLista]
 
-    # ------------------------
     # Se evalua si se equilibran las listas de features y targets para prueba y/o entrenamiento
     # Se evalua si se pide equilibrar o no
     if BALANCE_TEST:
@@ -783,7 +744,6 @@ def utilizarClasificadoresDiversasVariantesFeatures(listaUsuariosProcesados, val
                                       valorDeK, unClasificador, paramConstructor=0, f1Anterior=f1Aux)
 
         if unClasificador == 'OneClassSVM':
-            # es oneClass
             for unaConfigDParametros in KernelGammasMergeList:
                 f1Aux = generateMetricsML(listaFeaturesConOceanParaEntrenar,
                                           listaTargetsParaEntrenar,
@@ -915,7 +875,7 @@ def generateMetricsML(listaFeaturesParaEntrenar,
             # los que no son oneclass entrenan distinto
             clf.fit(listaFeaturesParaEntrenar, listaTargetsParaEntrenar)  # es para entrenar
 
-        """ Cálculo de RECALL y PRECISION """
+        """ Calculare RECALL and PRECISION """
         respuestaPredict = clf.predict(listaFeaturesParaProbar)
         respuestaPredict = functions.reemplazarValoresEnLista(respuestaPredict, valorABuscar=TARGET_FOR_ONE_CLASS,
                                                               valorNuevo=1,
@@ -924,14 +884,11 @@ def generateMetricsML(listaFeaturesParaEntrenar,
                                                      valorNuevo=-1,
                                                      buscarPorIgual=False)  # Cambia (no 4's) por -1 porque son los outliers
 
-        scores = "<Sin scores>"
+        scores = "<No scores>"
         if tipoClasificador == "OneClassSVM":
             scores = clf.score_samples(listaFeaturesParaProbar)
         else:
             scores = clf.score(listaFeaturesParaProbar, listaTargetsParaProbar)
-
-        print("Respuesta predict (con listaFeaturesParaProbar): \n",
-              functions.concatenarListaEnString(respuestaPredict, ', '))
 
         cantidadInliersEnPredict = len([i for i, e in enumerate(respuestaPredict) if e == 1])
         cantidadOutliersEnPredict = len([i for i, e in enumerate(respuestaPredict) if e == -1])
@@ -1021,4 +978,4 @@ for unCriterio in SELECTION_CRITERIA_DIF_TARGET_LIST:
         listaIDsCandidatos = functions.generarListaDadoArhivo(open(CANDIDATES_PATH_FILE_IDs + str(unCriterio) + ".txt", "r"))
     if unCriterio == 100:
         PROCESS_CANDIDATE_ID = False # porque no se se usa como criterio el 100 de diferencia entonces van a estar involucrados todos los usuario
-    main_scanUsersID()
+    mainScanUsersID()

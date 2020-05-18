@@ -7,8 +7,8 @@ import numpy as np
 import pickle  # es para poder guardar y escribir listas en archivos
 
 # dado un valor entero elavua si pertenece o no la lista de intervalos
-# Ejemplo de lista ['5-20', '40-60', '90-95']
-def pertenerAalgunIntervalo(valor, listaInt):
+# List example ['5-20', '40-60', '90-95']
+def belongsToSomeInterval(valor, listaInt):
     respuesta = False
     valor = int(valor)
     for unIntervalo in listaInt:
