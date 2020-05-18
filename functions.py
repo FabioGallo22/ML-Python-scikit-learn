@@ -19,8 +19,8 @@ def belongsToSomeInterval(valor, listaInt):
     return respuesta
 
 # dada una lista de intervalos, retorna el mayor valor contenido en alguno de ellos.
-# Ejemplo de lista ['5-20', '40-60', '90-95'] --> retornaria 95
-def obtenerMayorValorIntervalo(listaInt):
+# List example ['5-20', '40-60', '90-95'] --> returns 95
+def getHighValueInIntervals (listaInt):
     respuesta = 0
     for unIntervalo in listaInt:
         arrayAux = unIntervalo.split('-')
@@ -29,7 +29,7 @@ def obtenerMayorValorIntervalo(listaInt):
     return respuesta
 
 # dad un archivo, genera una lista con los elementos de la misma
-def generarListaDadoArhivo(fileEntrada):
+def generateListGivenAFile (fileEntrada):
     listaSalida = []
     for unaLinea in fileEntrada:
         listaSalida += [(unaLinea.split('\t'))[0]]
@@ -37,7 +37,7 @@ def generarListaDadoArhivo(fileEntrada):
 
 # retorna verdadero o falso si el elemento existe en la lista
 # El parámentro 'procesarDeVerdad', cuando es False retorna True sin evaluar de verdad, caso contrario evalua de verdad
-def existeElementoEnLista(elem, listaEntrada, procesarDeVerdad):
+def existElementInList(elem, listaEntrada, procesarDeVerdad):
     respuesta = False
     if procesarDeVerdad:
         respuesta = elem in listaEntrada

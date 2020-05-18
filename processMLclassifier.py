@@ -204,12 +204,12 @@ def mainScanUsersID():
     listaFeatureSinOcean = []
     listaTarget = []
     listaUsuariosProcesadosExitosamente = []  # cada elemento de esta lista es [pos,id] de cada usuario procesado exitosamente
-    maximaPosicionAProcesar = functions.obtenerMayorValorIntervalo(intervalsForProcessingList)
+    maximaPosicionAProcesar = functions.getHighValueInIntervals(intervalsForProcessingList)
     for linea in inputFileUsersIDs:
         posicion += 1
         if posicion <= maximaPosicionAProcesar:
             idUsuario = linea.replace('\n', '')
-            if functions.belongsToSomeInterval(posicion, intervalsForProcessingList) and functions.existeElementoEnLista(idUsuario, listaIDsCandidatos, PROCESS_CANDIDATE_ID):
+            if functions.belongsToSomeInterval(posicion, intervalsForProcessingList) and functions.existElementInList(idUsuario, listaIDsCandidatos, PROCESS_CANDIDATE_ID):
                 # linea tiene que ser procesada
                 # se elimina el salto de línea del final de la lectura
                 claseOCEAN = obtenerClaseOCEAN32(idUsuario, OCEANcutline[0])
@@ -975,7 +975,7 @@ for unCriterio in SELECTION_CRITERIA_DIF_TARGET_LIST:
     CRITERIO_SELECCION_DIF_TARGET = unCriterio
     # Se abre el archivo adecuado de IDs candidatos si se van a procesar los clasificaodres
     if PROCESS_CLASSIFIER:
-        listaIDsCandidatos = functions.generarListaDadoArhivo(open(CANDIDATES_PATH_FILE_IDs + str(unCriterio) + ".txt", "r"))
+        listaIDsCandidatos = functions.generateListGivenAFile(open(CANDIDATES_PATH_FILE_IDs + str(unCriterio) + ".txt", "r"))
     if unCriterio == 100:
         PROCESS_CANDIDATE_ID = False # porque no se se usa como criterio el 100 de diferencia entonces van a estar involucrados todos los usuario
     mainScanUsersID()
