@@ -866,7 +866,7 @@ def generateMetricsML(listaFeaturesParaEntrenar,
         horaInicioFit = datetime.datetime.now()
 
         # en la función fit se convoca otra función para obtener solamente aquellos features que tengan un determinado valor de target
-        [listaFeaturesDeterminadoTargetParaEntrenar, listaTargetsDeterminadoTargetParaEntrenar] = functions.obtenerFeaturesYTargetsSegunValorTarget(listaFeaturesParaEntrenar, listaTargetsParaEntrenar, TARGET_FOR_ONE_CLASS, True)
+        [listaFeaturesDeterminadoTargetParaEntrenar, listaTargetsDeterminadoTargetParaEntrenar] = functions.getFeatTargAccordingTargetValue(listaFeaturesParaEntrenar, listaTargetsParaEntrenar, TARGET_FOR_ONE_CLASS, True)
 
         # noinspection PyInterpreter
         if tipoClasificador == "OneClassSVM":
@@ -908,10 +908,10 @@ def generateMetricsML(listaFeaturesParaEntrenar,
         else:
             [accuracy, precision, recall, f1] = functions.calcularAccPrecRecF1(listaTargetsParaProbar, respuestaPredict, convertirA1sYmenos1=True, valorInlier=TARGET_FOR_ONE_CLASS)  # ************
 
-        [listaFeaturesDeterminadoTarget, listaTargetsDeterminadoTarget] = functions.obtenerFeaturesYTargetsSegunValorTarget(listaFeaturesParaEntrenar, listaTargetsParaEntrenar, TARGET_FOR_ONE_CLASS, True)
+        [listaFeaturesDeterminadoTarget, listaTargetsDeterminadoTarget] = functions.getFeatTargAccordingTargetValue(listaFeaturesParaEntrenar, listaTargetsParaEntrenar, TARGET_FOR_ONE_CLASS, True)
         X_train = listaFeaturesDeterminadoTarget
         X_test  = listaFeaturesParaProbar
-        [listaFeaturesNODeterminadoTarget, listaTargetsNODeterminadoTarget] = functions.obtenerFeaturesYTargetsSegunValorTarget(listaFeaturesParaEntrenar, listaTargetsParaEntrenar, TARGET_FOR_ONE_CLASS, False)
+        [listaFeaturesNODeterminadoTarget, listaTargetsNODeterminadoTarget] = functions.getFeatTargAccordingTargetValue(listaFeaturesParaEntrenar, listaTargetsParaEntrenar, TARGET_FOR_ONE_CLASS, False)
         X_outliers = listaFeaturesNODeterminadoTarget
 
         stringColumnaPromFeaturesEntrenamiento = functions.obtenerPromedioCantidadElementosSublistas(listaFeaturesParaEntrenar, devolverString=True)
@@ -948,7 +948,7 @@ def generateMetricsML(listaFeaturesParaEntrenar,
                                                    str(len(listaFeaturesParaEntrenar)) + '\t' + str(len(listaFeaturesParaProbar)) + '\t' +
                                                    stringColumnaPromFeaturesEntrenamiento + '\t' +
                                                    stringColumnaPromFeaturesPrueba + '\t' + str(LEARNING_PERCENT) + '\t' +
-                                                 (functions.concatenarListaEnString(scores, ', '))[:64] + '\t' + stringCantidadInliers + '\t' +
+                                                 (functions.concatListInString(scores, ', '))[:64] + '\t' + stringCantidadInliers + '\t' +
                                                    stringCantidadOutliers + '\t' + str(accuracy) + '\t' + str(precision) + '\t' +
                                                    str(recall) + '\t' + str(f1) + '\t' + stringAuxRestaF1 + '\t' + stringAuxDivF1 + '\t' + str((precision + recall)/2) + '\t' +
                                                    stringTN + '\t' + stringFP + '\t' + stringFN + '\t' + stringTP + '\t' +
@@ -962,7 +962,7 @@ def generateMetricsML(listaFeaturesParaEntrenar,
                                                                              str(len(listaFeaturesParaEntrenar)) + '\t' + str(len(listaFeaturesParaProbar)) + '\t' +
                                                                              stringColumnaPromFeaturesEntrenamiento + '\t' +
                                                                              stringColumnaPromFeaturesPrueba + '\t' + str(LEARNING_PERCENT) + '\t' +
-                                                 (functions.concatenarListaEnString(scores, ', '))[:64] + '\t' + stringCantidadInliers + '\t' +
+                                                 (functions.concatListInString(scores, ', '))[:64] + '\t' + stringCantidadInliers + '\t' +
                                                                              stringCantidadOutliers + '\t' + str(accuracy) + '\t' + str(precision) + '\t' +
                                                                              str(recall) + '\t' + str(f1) + '\t' + stringAuxRestaF1 + '\t' + stringAuxDivF1 + '\t' + str((precision + recall)/2) + '\t' +
                                                                              stringTN + '\t' + stringFP + '\t' + stringFN + '\t' + stringTP + '\t' +

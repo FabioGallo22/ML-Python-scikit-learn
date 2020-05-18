@@ -105,7 +105,7 @@ def activatedDeactivateFeatures(listaFeaturesFull, DICT_POSICIONES_FEATURES): # 
 # dada las listas, retorna aquellas features y target cuyos targets tienen (o no) el valor determinado 'valorTargets'
 # Si condicionTarget = True entonces se eligen features y targets que tienen un determinado valorTarget.
 # Si condicionTarget = False son features y targets que NO son del determinado target (es decir, son distintos).
-def obtenerFeaturesYTargetsSegunValorTarget(listaFeatures, listaTarget, valorTarget, condicionTarget): # OK!
+def getFeatTargAccordingTargetValue(listaFeatures, listaTarget, valorTarget, condicionTarget): # OK!
     # se obtienen las posiciones de la lista target que tienen el valor indicado
     listaPosicionesConValorTarget = []
     if condicionTarget:
@@ -116,7 +116,7 @@ def obtenerFeaturesYTargetsSegunValorTarget(listaFeatures, listaTarget, valorTar
 
 
 # 'separador' es el character que se utiliza para dividir cada elemento en la lista
-def concatenarListaEnString(lista, separador):
+def concatListInString(lista, separador):
     cadenaSalida = ""
     # se evalua si la lista de verdad lo es
     if isinstance(lista, collections.Iterable):
