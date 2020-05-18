@@ -47,7 +47,7 @@ def existElementInList(elem, listaEntrada, procesarDeVerdad):
 
 # dada las dos listas, de la lista de target se cuentan la cantidad de '4' que tiene, y se seleccciona igual cantidad de targets que tienen '0'de manera aleatoria
 # y retorna la lista de target con '4' y '0' en igual cantidades y la lista de features acorde a dicha elección
-def equilibrarTargets(listaFeatures, listaTargets):
+def balanceTargets (listaFeatures, listaTargets):
     listaFeaturesSalida = []
     listaTargetsSalida = []
 
@@ -77,16 +77,13 @@ def equilibrarTargets(listaFeatures, listaTargets):
     listaFeaturesSalida = [listaFeatures[i] for i in listaPosiciones4]
     listaFeaturesSalida += [listaFeatures[i] for i in listaPosicionesNo4]
 
-    # # se mezclan las posiciones de las listas manteniendo la correlación entre ambas.
-    # listaPosicionesAmbosValores = listaPosiciones4 + listaPosicionesNo4
-    # print(">>> Listas juntas: ", listaPosicionesAmbosValores)
     return listaFeaturesSalida, listaTargetsSalida
 
 
 # dada una lista de entrada de features completa (con todas las features), se avalúa  si
 # cada feature se queda o se va de salida en cada sublista, según está especificado
 # en DICT_POSICIONES_FEATURES y retorna dicha lista sobrante
-def activarDesactivarFeatures(listaFeaturesFull, DICT_POSICIONES_FEATURES): # OK!
+def activatedDeactivateFeatures(listaFeaturesFull, DICT_POSICIONES_FEATURES): # OK!
     listaSalidaFeaturesActivas = None
 
     # se recorre el diccionario que indica si cada posición va o no

@@ -692,7 +692,7 @@ def sacarOceanDeListaFeaturesOcean(listaFeatureConOcean):
 # Dada las listas de entrada, evaluará con distintos clasificadores y almacena los resultados en un archivo de salida
 def utilizarClasificadoresDiversasVariantesFeatures(listaUsuariosProcesados, valorDeK, intervalo, listaFeaturesCompleta, listaTargets):
     # Lo que antes era listaFeaturesSinOcean ahora se solamente es igual a listaFeaturesCompleta pero sin los parámetros del DICT_POSICIONES_FEATURES
-    listaFeaturesSinOcean = functions.activarDesactivarFeatures(listaFeaturesCompleta, DICT_POSICIONES_FEATURES)
+    listaFeaturesSinOcean = functions.activatedDeactivateFeatures(listaFeaturesCompleta, DICT_POSICIONES_FEATURES)
 
     # se transforma la lista de usuarios procesados a un string para poder ser guardado en el archivo de salida
     # pasa por ejemplo de [[1,23444],[2,56565]] >> "(1)23444,(2)56565"
@@ -716,17 +716,17 @@ def utilizarClasificadoresDiversasVariantesFeatures(listaUsuariosProcesados, val
     # Se evalua si se equilibran las listas de features y targets para prueba y/o entrenamiento
     # Se evalua si se pide equilibrar o no
     if BALANCE_TEST:
-        [listaFeaturesConOceanParaProbar, listaTargetsParaProbarNoSeUsa] = functions.equilibrarTargets(
+        [listaFeaturesConOceanParaProbar, listaTargetsParaProbarNoSeUsa] = functions.balanceTargets(
             listaFeaturesConOceanParaProbar,
             listaTargetsParaProbar)  # listaTargetsParaProbarNoSeUsa se llama con un nombre cualquiera porque no será usada ya que TARGET la primera vez no debe ser cortado porque se utiliza con dos listas de features
-        [listaFeaturesSinOceanParaProbar, listaTargetsParaProbar] = functions.equilibrarTargets(
+        [listaFeaturesSinOceanParaProbar, listaTargetsParaProbar] = functions.balanceTargets(
             listaFeaturesSinOceanParaProbar, listaTargetsParaProbar)
 
     if BALANCE_TRAINING:
-        [listaFeaturesConOceanParaEntrenar, listaTargetsParaEntrenarNoSeUsa] = functions.equilibrarTargets(
+        [listaFeaturesConOceanParaEntrenar, listaTargetsParaEntrenarNoSeUsa] = functions.balanceTargets(
             listaFeaturesConOceanParaEntrenar,
             listaTargetsParaEntrenar)  # listaTargetsParaEntrenarNoSeUsa se llama con un nombre cualquiera porque no será usada ya que TARGET la primera vez no debe ser cortado porque se utiliza con dos listas de features
-        [listaFeaturesSinOceanParaEntrenar, listaTargetsParaEntrenar] = functions.equilibrarTargets(
+        [listaFeaturesSinOceanParaEntrenar, listaTargetsParaEntrenar] = functions.balanceTargets(
             listaFeaturesSinOceanParaEntrenar, listaTargetsParaEntrenar)
 
     # Se obtienen los nombres de clasificadores a utilizar acorde a la 'classifiersToUseList'
