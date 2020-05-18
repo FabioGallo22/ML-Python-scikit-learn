@@ -6,7 +6,7 @@
     Only you have to set ....
 
     Furthermore, it can be selected which configuratiosn is wanted to run.
-        - Set list 'listaConfiguracionesElegidas' with the configurations, and 'correrConfiguracionesElegidas' as true.
+        - Set list 'listaConfiguracionesElegidas' with the configurations, and 'runSelectedConfigurations' as true.
 
  """
 import pickle  # es para poder guardar y escribir listas en archivos
@@ -85,7 +85,7 @@ DATASET_END_DATE    = date(2015, 3, 25)
 PATH_FILE_OCEAN = "<file_path_here>" # Here is the text file path wich contains in each line a user ID and (separated by 'tab' /t) its OCEAN value in [1,32]
 OCEANcutline = ['point5']  # There were skecth different values for discretizing in "+" and "-" to obtain a value between 1 and 32. Given that the values obtained by OCEAN API are already normalized, 0.5 is a proper cutline.
 
-correrConfiguracionesElegidas = True
+runSelectedConfigurations = True
 
 listaConfiguracionesElegidas = [["LogisticRegression","<no aplica>"],
                                 ["DecisionTreeClassifier","<no aplica>"],
@@ -137,22 +137,17 @@ translation12hoursToNumDict = { # This is related with the value of 'intervalBre
 }
 
 OUTPUT_PATH_FILES = "<file_path_here>"  # Path where are going to be stored the generated files.
-PATH_SALIDA_LISTA_FEATURES = "<local_folder_name>" + str(intervalBreadthThatRemember[0]) + "-k" + str(amountKthatRemember[0]) + "/"  # This project folder is goig to store  *.py files for each user which contains the features and targets as a list. Thus, the process result could be reused.
-PATH_FILE_IDs_CANDIDATOS = "<file_path_here>" + intervalBreadthThatRemember[0] + "-k" + str(amountKthatRemember[0]) + "/IDsCandidatosParaClasificador-" # this is the folder path that contains a IDs' text file for each cutline in 'SELECTION_CRITERIA_DIF_TARGET_LIST'.
-PATH_SALIDA_ARCHIVOS_POR_CLASI = "C:/Users/fgallo/OneDrive - cs.uns.edu.ar/BR-SNs/Experimentos/clasificadores-INDIA/salidaClasificadoresIndiaRESUMEN (clasificadores individuales)/"
+FEATURES_OUTPUT_PATH_LIST = "<local_folder_name>" + str(intervalBreadthThatRemember[0]) + "-k" + str(amountKthatRemember[0]) + "/"  # This project folder is goig to store  *.py files for each user which contains the features and targets as a list. Thus, the process result could be reused.
+CANDIDATES_PATH_FILE_IDs = "<file_path_here>" + intervalBreadthThatRemember[0] + "-k" + str(amountKthatRemember[0]) + "/IDsCandidatosParaClasificador-" # this is the folder path that contains a IDs' text file for each cutline in 'SELECTION_CRITERIA_DIF_TARGET_LIST'.
+FILE_OUTPUT_PATH_FOR_CLASSIFIER = "<file_path_here>"
 
-horaInicio = datetime.datetime.now()
-print("Hora de INICIO: ", horaInicio)
-
-#Nuevo nombre fileSalidaResumenTodosClasificadores (único archivo donde se guarda todas las salidas de los clasificadores)
 stringParaNombreArchivoSalida = ""
-if correrConfiguracionesElegidas:
-    stringParaNombreArchivoSalida = "(solo config elegidas)"
+if runSelectedConfigurations:
+    stringParaNombreArchivoSalida = "(only selected configurations)"
 
-auxStringFileYrutaResumenClasificadores = OUTPUT_PATH_FILES + "salidaClasificadoresIndiaRESUMEN-" + str(intervalBreadthThatRemember[0]) + ",k" + str(amountKthatRemember[0]) + stringParaNombreArchivoSalida + ".txt" # Ejemplo de nombre: salidaClasificadoresIndiaRESUMEN-12hs,k4
-fileSalidaResumenTodosClasificadores = open(auxStringFileYrutaResumenClasificadores, "a")
+auxStringFileAndClassifResumePath = OUTPUT_PATH_FILES + "salidaClasificadoresIndiaRESUMEN-" + str(intervalBreadthThatRemember[0]) + ",k" + str(amountKthatRemember[0]) + stringParaNombreArchivoSalida + ".txt" # Ejemplo de nombre: salidaClasificadoresIndiaRESUMEN-12hs,k4
+fileSalidaResumenTodosClasificadores = open(auxStringFileAndClassifResumePath, "a")
 
-# fileSalidaResumenClasificadoresResumenOtrosClasif = open(PATH_FILE_SALIDA_RESUMEN_OTROS_CLASIFICADORES, "a")
 [stringNombresClaves, stringNombresValores] = functions.convertirAStringClavesYValoresDeDiccionario(DICT_POSICIONES_FEATURES, '\t', '\t')
 stringEncabezadoResumenTodosClasificadores = (
             "Procesar IDs candidatos?\tCriterio candidatos\tEquilibrar entrenamiento?\tEquilibrar prueba?\t" + stringNombresClaves + "\tParametro\t\t" +
@@ -162,11 +157,11 @@ stringEncabezadoResumenTodosClasificadores = (
             "tamPromFeaturesPRUEBA(cantElemIndividuales/CantFeatures)\t% para entrenar\tScore_samples\t" +
             "CantInliers(1)\tCantOutliers(-1)\tAccuracy\tPrecision\tRecall\tF1(lib)\tF1-F1ant\tF1ant div F1\tF1(alt)\tCant TN\tCant FP\tCant FN\tCant TP\ttiempo ejecucion\t\tInfo extra\n")
 
-if os.path.getsize(auxStringFileYrutaResumenClasificadores) == 0:
+if os.path.getsize(auxStringFileAndClassifResumePath) == 0:
     # Esta vacio el archivo, se le agregan los encabezados de las columnas
     fileSalidaResumenTodosClasificadores.write(stringEncabezadoResumenTodosClasificadores)
 
-dictArchivosIndividualesPorClasificador = functions.generarArchivosPorCadaStringEnLista(classifiersToUseList, PATH_SALIDA_ARCHIVOS_POR_CLASI, str(intervalBreadthThatRemember[0]), str(amountKthatRemember[0]), stringEncabezadoResumenTodosClasificadores)
+dictArchivosIndividualesPorClasificador = functions.generarArchivosPorCadaStringEnLista(classifiersToUseList, FILE_OUTPUT_PATH_FOR_CLASSIFIER, str(intervalBreadthThatRemember[0]), str(amountKthatRemember[0]), stringEncabezadoResumenTodosClasificadores)
 
 listaIDsCandidatos = None
 CRITERIO_SELECCION_DIF_TARGET = None
@@ -175,11 +170,11 @@ CRITERIO_SELECCION_DIF_TARGET = None
 # Dado un usuario, un k, un intervalo, y 2 listas (featuresConOcean y Target) guarda tales listas en archivos .py distintos
 def guardarListasFeaturesYtarget(idUsuario, listaFeatureConOcean, listaTarget, valorK, intervalo):
     fileSalidaFeautureConOcean = open(
-        PATH_SALIDA_LISTA_FEATURES + idUsuario + "-" + str(valorK) + "-" + intervalo + "-featureConOCEAN.py",
+        FEATURES_OUTPUT_PATH_LIST + idUsuario + "-" + str(valorK) + "-" + intervalo + "-featureConOCEAN.py",
         "wb")  # el nombre de cada archivo será "idUsuario-k-intervalo-featureConOCEAN.py"
     pickle.dump(listaFeatureConOcean, fileSalidaFeautureConOcean)
 
-    fileSalidaTarget = open(PATH_SALIDA_LISTA_FEATURES + idUsuario + "-" + str(valorK) + "-" + intervalo + "-target.py",
+    fileSalidaTarget = open(FEATURES_OUTPUT_PATH_LIST + idUsuario + "-" + str(valorK) + "-" + intervalo + "-target.py",
                             "wb")  # el nombre de cada archivo será "idUsuario-k-intervalo-target.py"
     pickle.dump(listaTarget, fileSalidaTarget)
 
@@ -191,12 +186,12 @@ def leerListasFeaturesYtarget(idUsuario, valorK, intervalo):
     listaSalidaTarget = None
 
     fileEntradaFeautureConOcean = open(
-        PATH_SALIDA_LISTA_FEATURES + idUsuario + "-" + str(valorK) + "-" + intervalo + "-featureConOCEAN.py",
+        FEATURES_OUTPUT_PATH_LIST + idUsuario + "-" + str(valorK) + "-" + intervalo + "-featureConOCEAN.py",
         "rb")  # el nombre de cada archivo será "idUsuario-k-intervalo-featureConOCEAN.py"
     listaSalidaFeatureConOcean = pickle.load(fileEntradaFeautureConOcean)
 
     fileEntradaTarget = open(
-        PATH_SALIDA_LISTA_FEATURES + idUsuario + "-" + str(valorK) + "-" + intervalo + "-target.py",
+        FEATURES_OUTPUT_PATH_LIST + idUsuario + "-" + str(valorK) + "-" + intervalo + "-target.py",
         "rb")  # el nombre de cada archivo será "idUsuario-k-intervalo-target.py"
     listaSalidaTarget = pickle.load(fileEntradaTarget)
 
@@ -225,12 +220,12 @@ def main_scanUsersID():
                     # Dado el id de usuario publicador leido, Se obtiene el nombres de archivo con su ruta completa acorde a cada uno de las amplitudes de intervalos y los k intervalos que recuerda
                     for unIntervalo in intervalBreadthThatRemember:
                         for unValorDeK in amountKthatRemember:
-                            # ya que la lista para usalas luego en los clasificadores una vez generados son guardados en PATH_SALIDA_LISTA_FEATURES
+                            # ya que la lista para usalas luego en los clasificadores una vez generados son guardados en FEATURES_OUTPUT_PATH_LIST
                             # se pregunta si es que no se generó yguardó antes para el usuario, k, e intervalo determinado.
                             # solo si existen los 2 archivos no son generador de nuevo (features con ocean y target)
-                            if not (os.path.isfile(PATH_SALIDA_LISTA_FEATURES + idUsuario + "-" + str(
+                            if not (os.path.isfile(FEATURES_OUTPUT_PATH_LIST + idUsuario + "-" + str(
                                     unValorDeK) + "-" + unIntervalo + "-featureConOCEAN.py") and os.path.isfile(
-                                PATH_SALIDA_LISTA_FEATURES + idUsuario + "-" + str(
+                                FEATURES_OUTPUT_PATH_LIST + idUsuario + "-" + str(
                                     unValorDeK) + "-" + unIntervalo + "-target.py")):
                                 print("No existia procesamiento previo.")
                                 [respuesta, listaFeatureConOceanAux,
@@ -907,7 +902,7 @@ def generateMetricsML(listaFeaturesParaEntrenar,
 
     f1 = -1 # se inicia aqui la variable porque es la var que se devuelve en esta función
     # se evalua si se corren todas las configuraciones o si es una configuracion de las permitidas para esta corrida.
-    if not(correrConfiguracionesElegidas) or [tipoClasificador,stringParametroConstructor] in listaConfiguracionesElegidas:
+    if not(runSelectedConfigurations) or [tipoClasificador, stringParametroConstructor] in listaConfiguracionesElegidas:
         horaInicioFit = datetime.datetime.now()
 
         # en la función fit se convoca otra función para obtener solamente aquellos features que tengan un determinado valor de target
@@ -1023,11 +1018,7 @@ for unCriterio in SELECTION_CRITERIA_DIF_TARGET_LIST:
     CRITERIO_SELECCION_DIF_TARGET = unCriterio
     # Se abre el archivo adecuado de IDs candidatos si se van a procesar los clasificaodres
     if PROCESS_CLASSIFIER:
-        listaIDsCandidatos = functions.generarListaDadoArhivo(open(PATH_FILE_IDs_CANDIDATOS + str(unCriterio) + ".txt", "r"))
+        listaIDsCandidatos = functions.generarListaDadoArhivo(open(CANDIDATES_PATH_FILE_IDs + str(unCriterio) + ".txt", "r"))
     if unCriterio == 100:
         PROCESS_CANDIDATE_ID = False # porque no se se usa como criterio el 100 de diferencia entonces van a estar involucrados todos los usuario
     main_scanUsersID()
-
-horaFin = datetime.datetime.now()
-print("Hora de INICIO - FIN: \t ", horaInicio, " \n\t\t\t\t\t\t ", horaFin)
-print("Duración: ", horaFin - horaInicio)
